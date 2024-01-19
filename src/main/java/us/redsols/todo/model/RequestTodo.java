@@ -1,44 +1,26 @@
 package us.redsols.todo.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+public class RequestTodo {
 
-@Document
-public class Todo {
-    @Id
-    private String id;
     private String title;
     private String date;
     private boolean completed;
     private boolean repeat;
     private boolean remind;
-
     private String uid;
+    private String username;
 
+    private String token;
 
-    public Todo(String title, String date, boolean repeat, boolean remind, String uid ){
-        super();
+    public RequestTodo(String title, String date, boolean completed, boolean repeat, boolean remind, String uid, String username, String token) {
         this.title = title;
         this.date = date;
+        this.completed = completed;
         this.repeat = repeat;
         this.remind = remind;
         this.uid = uid;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.username = username;
+        this.token = token;
     }
 
     public String getTitle() {
@@ -79,5 +61,29 @@ public class Todo {
 
     public void setRemind(boolean remind) {
         this.remind = remind;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

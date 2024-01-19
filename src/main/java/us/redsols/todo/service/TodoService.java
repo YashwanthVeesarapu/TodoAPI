@@ -13,8 +13,8 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public List<Todo> getAllTodos(){
-        return  todoRepository.findAll();
+    public List<Todo> getAllTodos(String uid){
+        return  todoRepository.findByUid(uid);
     }
 
     public Todo createTodo(Todo todo){

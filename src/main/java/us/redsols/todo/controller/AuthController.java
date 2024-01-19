@@ -45,7 +45,7 @@ public class AuthController {
 
         if(existingUser.isPresent()){
             if (passwordEncoder.matches(user.getPassword(), existingUser.get().getPassword())) {
-                String token = jwtTokenProvider.generateToken(existingUser.get().getUsername());
+                String token = jwtTokenProvider.generateToken(existingUser.get().getUsername(), existingUser.get().getId());
                 existingUser.get().setAccessToken(token);
                 existingUser.get().setPassword("");
                 return ResponseEntity.ok(existingUser.get());
@@ -57,7 +57,7 @@ public class AuthController {
         else{
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             User newUser = authService.loginUser(user);
-            String token = jwtTokenProvider.generateToken(newUser.getUsername());
+            String token = jwtTokenProvider.generateToken(newUser.getUsername(), newUser.getId());
             newUser.setAccessToken(token);
             newUser.setPassword("");
             return ResponseEntity.ok(newUser);
@@ -65,13 +65,11 @@ public class AuthController {
     }
 
 
-    @PostMapping("check")
-    public ResponseEntity<?> checkToken(@RequestBody String token) {
+    public boolean checkToken(@RequestBody String token) {
         if (jwtTokenProvider.validateToken(token)) {
-            String username = jwtTokenProvider.getUsernameFromToken(token);
-            return ResponseEntity.ok("Token is valid for user: " + username);
+            return true;
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+            return false;
         }
     }
 }

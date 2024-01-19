@@ -14,16 +14,29 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private int jwtExpirationInMs;
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String uid) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("uid", uid)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
+    }
+
+
+    // Method to extract UID from a JWT
+    public String extractUid(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+
+        // Retrieve the UID claim
+        return (String) claims.get("uid");
     }
 
     public String getUsernameFromToken(String token) {
