@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>us.redsols</groupId>
 	<artifactId>todo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>todo</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -56,6 +56,17 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>3.0.7</version>
+				<configuration>
+					<processTypes>
+						<web>java $JAVA_OPTS -jar target/todo-0.0.1.jar -Dserver.timeout=120000</web>
+					</processTypes>
+				</configuration>
+
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
