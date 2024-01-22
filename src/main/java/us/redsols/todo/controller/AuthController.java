@@ -40,6 +40,9 @@ public class AuthController {
         if (user.getPassword().length() < 4) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must be at least 4 characters long");
         }
+        if (user.getUsername().length() < 4) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username must be at least 4 characters long");
+        }
 
         Optional<User> existingUser = authService.getUserByUsername(user.getUsername());
 
@@ -56,7 +59,7 @@ public class AuthController {
         }
         else{
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            User newUser = authService.loginUser(user);
+            User newUser = authService.addUser(user);
             String token = jwtTokenProvider.generateToken(newUser.getUsername(), newUser.getId());
             newUser.setAccessToken(token);
             newUser.setPassword("");

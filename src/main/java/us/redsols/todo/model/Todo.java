@@ -10,27 +10,24 @@ public class Todo {
     private String title;
     private String date;
     private boolean completed;
-    private boolean repeat;
+    private String repeat;
     private boolean remind;
+    private boolean important;
 
     private String uid;
+    private String token;
 
+   private String username;
 
-    public Todo(String title, String date, boolean repeat, boolean remind, String uid ){
-        super();
+    public Todo( String title, String date, boolean completed, String repeat, boolean remind, boolean important, String uid) {
         this.title = title;
         this.date = date;
+        this.completed = completed;
         this.repeat = repeat;
         this.remind = remind;
+        this.important = important;
         this.uid = uid;
-    }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 
     public String getId() {
@@ -65,11 +62,11 @@ public class Todo {
         this.completed = completed;
     }
 
-    public boolean isRepeat() {
+    public String getRepeat() {
         return repeat;
     }
 
-    public void setRepeat(boolean repeat) {
+    public void setRepeat(String repeat) {
         this.repeat = repeat;
     }
 
@@ -79,5 +76,37 @@ public class Todo {
 
     public void setRemind(boolean remind) {
         this.remind = remind;
+    }
+
+    public boolean isImportant() {
+        return important;
+    }
+
+    public void setImportant(boolean important) {
+        this.important = important;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

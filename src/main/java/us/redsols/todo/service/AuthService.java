@@ -18,7 +18,7 @@ public class AuthService {
         return authRepository.findByUsername(username);
     }
 
-    public User loginUser(User user){
+    public User addUser(User user){
         return authRepository.insert(user);
     }
 }

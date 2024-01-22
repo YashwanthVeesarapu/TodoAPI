@@ -5,6 +5,8 @@ import us.redsols.todo.repo.TodoRepository;
 import us.redsols.todo.model.Todo;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class TodoService {
     private final TodoRepository todoRepository;
@@ -23,5 +25,9 @@ public class TodoService {
 
     public  Todo editTodo(Todo todo){
         return  todoRepository.save(todo);
+    }
+
+    public void deleteTodo(Todo todo){
+        todoRepository.delete(todo);
     }
 }
