@@ -3,6 +3,7 @@ package us.redsols.todo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +31,15 @@ public class NotificationController {
         this.emailService = emailService;
     }
 
+    @Value("${ADMIN_TOKEN}")
+    private String adminToken;
+
     @GetMapping
     public ResponseEntity<?> fetchAllTodos(
             @RequestHeader("Authorization") String token) {
-        if (!token.isEmpty()) {
-            if (token.equals("redsols")) {
 
+        if (!token.isEmpty()) {
+            if (token.equals(adminToken)) {
                 // Send Email Notifications to all users
 
                 Iterable<User> users = authService.getAllUsers();
@@ -47,7 +51,6 @@ public class NotificationController {
                     List<Todo> pastTodos = new ArrayList<>();
 
                     for (Todo todo : todos) {
-                        System.out.println(todo.getRemind());
                         if (!todo.isCompleted()) {
                             // TODO : Handle null values
                             if (todo.getRemind().equals("true")) {
@@ -67,7 +70,6 @@ public class NotificationController {
                         html += "<head>";
                         html += "<style>";
                         html += "body {font-family: Arial, sans-serif;}";
-                        html += "h1 {color: #0047AB;}";
                         html += "p {color: #008000;}";
                         html += ".past-task {color: #FF0000;}";
                         html += ".task-list {margin-bottom: 20px;}";
