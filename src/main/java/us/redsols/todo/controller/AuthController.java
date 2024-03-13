@@ -13,6 +13,7 @@ import us.redsols.todo.model.User;
 import us.redsols.todo.service.AuthService;
 import us.redsols.todo.service.TodoService;
 
+import java.sql.PreparedStatement;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +31,28 @@ public class AuthController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @PostMapping
+
+    @PostMapping("register")
+    public ResponseEntity<?> register(@RequestBody User user){
+        if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username and password are required");
+        }
+        // Check minimum password length
+        if (user.getPassword().length() < 4) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must be at least 4 characters long");
+        }
+        if (user.getUsername().length() < 4) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username must be at least 4 characters long");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User newUser = authService.addUser(user);
+        String token = jwtTokenProvider.generateToken(newUser.getUsername(), newUser.getId());
+        newUser.setAccessToken(token);
+        newUser.setPassword("");
+        return ResponseEntity.ok(newUser);
+    }
+
+    @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody User user){
 
         if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
@@ -58,12 +80,7 @@ public class AuthController {
             }
         }
         else{
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            User newUser = authService.addUser(user);
-            String token = jwtTokenProvider.generateToken(newUser.getUsername(), newUser.getId());
-            newUser.setAccessToken(token);
-            newUser.setPassword("");
-            return ResponseEntity.ok(newUser);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Incorrect username or password");
         }
     }
 

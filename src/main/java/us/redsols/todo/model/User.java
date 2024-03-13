@@ -12,13 +12,14 @@ public class User {
     private String username;
     private String password;
     private String accessToken;
+    private String email;
 
-
-    public User(String username, String password, String accessToken) {
+    public User(String username, String password, String accessToken, String email) {
         super();
         this.username = username;
         this.password = password;
         this.accessToken = accessToken;
+        this.email = email;
     }
 
     public String getId() {
@@ -51,5 +52,13 @@ public class User {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

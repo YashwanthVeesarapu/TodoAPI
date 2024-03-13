@@ -18,7 +18,11 @@ public class AuthService {
         return authRepository.findByUsername(username);
     }
 
-    public User addUser(User user){
+    public Iterable<User> getAllUsers() {
+        return authRepository.findAll();
+    }
+
+    public User addUser(User user) {
         return authRepository.insert(user);
     }
 }

@@ -11,7 +11,7 @@ public class Todo {
     private String date;
     private boolean completed;
     private String repeat;
-    private boolean remind;
+    private String remind;
     private boolean important;
 
     private String uid;
@@ -19,7 +19,7 @@ public class Todo {
 
    private String username;
 
-    public Todo( String title, String date, boolean completed, String repeat, boolean remind, boolean important, String uid) {
+    public Todo( String title, String date, boolean completed, String repeat, String remind, boolean important, String uid) {
         this.title = title;
         this.date = date;
         this.completed = completed;
@@ -27,7 +27,6 @@ public class Todo {
         this.remind = remind;
         this.important = important;
         this.uid = uid;
-
     }
 
     public String getId() {
@@ -70,11 +69,11 @@ public class Todo {
         this.repeat = repeat;
     }
 
-    public boolean isRemind() {
+    public String getRemind() {
         return remind;
     }
 
-    public void setRemind(boolean remind) {
+    public void setRemind(String remind) {
         this.remind = remind;
     }
 
