@@ -5,11 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+
 @Component
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
-    private String jwtSecret ;
+    private String jwtSecret;
 
     @Value("${jwt.expiration}")
     private int jwtExpirationInMs;
@@ -26,7 +27,6 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
-
 
     // Method to extract UID from a JWT
     public String extractUid(String token) {
@@ -52,7 +52,8 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
+        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException
+                | IllegalArgumentException ex) {
             return false;
         }
     }

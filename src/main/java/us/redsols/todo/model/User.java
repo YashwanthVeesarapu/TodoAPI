@@ -14,12 +14,15 @@ public class User {
     private String accessToken;
     private String email;
 
-    public User(String username, String password, String accessToken, String email) {
+    private String timezone;
+
+    public User(String username, String password, String accessToken, String email, String timezone) {
         super();
         this.username = username;
         this.password = password;
         this.accessToken = accessToken;
         this.email = email;
+        this.timezone = timezone;
     }
 
     public String getId() {
@@ -60,5 +63,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
     }
 }

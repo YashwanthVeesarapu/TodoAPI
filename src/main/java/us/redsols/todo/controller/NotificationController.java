@@ -51,18 +51,13 @@ public class NotificationController {
                     List<Todo> pastTodos = new ArrayList<>();
 
                     for (Todo todo : todos) {
-                        if (!todo.isCompleted()) {
-                            // TODO : Handle null values
-                            if (todo.getRemind().equals("true")) {
-                                if (todo.getDate().equals(
-                                        java.time.LocalDate.now().toString()))
-                                    todayTodos.add(todo);
-                                else if (todo.getDate().compareTo(
-                                        java.time.LocalDate.now().toString()) < 0)
-                                    pastTodos.add(todo);
-                            }
-                        }
+                        if (!todo.isCompleted() && (todo.getRemind().equals("true"))) {
 
+                            if (todo.getDate().equals(java.time.LocalDate.now().toString()))
+                                todayTodos.add(todo);
+                            else if (todo.getDate().compareTo(java.time.LocalDate.now().toString()) < 0)
+                                pastTodos.add(todo);
+                        }
                     }
                     if (todayTodos.size() > 0 || pastTodos.size() > 0) {
                         String html = "<!DOCTYPE html>";

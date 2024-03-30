@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import us.redsols.todo.config.JwtTokenProvider;
 import us.redsols.todo.model.User;
 import us.redsols.todo.service.AuthService;
-import us.redsols.todo.service.TodoService;
 
-import java.sql.PreparedStatement;
 import java.util.Optional;
 
 @RestController
@@ -31,10 +29,9 @@ public class AuthController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody User user){
-        if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
+    public ResponseEntity<?> register(@RequestBody User user) {
+        if (user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username and password are required");
         }
         // Check minimum password length
@@ -53,9 +50,9 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody User user){
+    public ResponseEntity<?> login(@RequestBody User user) {
 
-        if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
+        if (user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username and password are required");
         }
         // Check minimum password length
@@ -68,22 +65,24 @@ public class AuthController {
 
         Optional<User> existingUser = authService.getUserByUsername(user.getUsername());
 
-        if(existingUser.isPresent()){
+        if (existingUser.isPresent()) {
             if (passwordEncoder.matches(user.getPassword(), existingUser.get().getPassword())) {
-                String token = jwtTokenProvider.generateToken(existingUser.get().getUsername(), existingUser.get().getId());
+                String token = jwtTokenProvider.generateToken(existingUser.get().getUsername(),
+                        existingUser.get().getId());
                 existingUser.get().setAccessToken(token);
+                // existingUser.get().setPassword("");
+                // remove password field from response no key in json
                 existingUser.get().setPassword("");
+
                 return ResponseEntity.ok(existingUser.get());
             } else {
                 // Passwords do not match, handle accordingly (e.g., return an error response)
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
             }
-        }
-        else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Incorrect username or password");
         }
     }
-
 
     public boolean checkToken(@RequestBody String token) {
         if (jwtTokenProvider.validateToken(token)) {
