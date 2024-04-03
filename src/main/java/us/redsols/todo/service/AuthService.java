@@ -25,4 +25,10 @@ public class AuthService {
     public User addUser(User user) {
         return authRepository.insert(user);
     }
+
+    // get user by id
+    public Optional<User> getUserById(String id) {
+        return authRepository.findById(id);
+    }
+
 }

@@ -1,36 +1,47 @@
 package us.redsols.todo.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.http.*;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import us.redsols.todo.model.Email;
+
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 @Service
 public class EmailService {
 
-    public void sendEmail(String to, String html, String subject) {
-        // Call other micro service to send email
-        String apiURL = "https://api.redash.us/email/send";
-//        String apiURL = "http://localhost:4000/email/send";
+    private JavaMailSender javaMailSender;
 
-        String from = "REDSOLS <hello@redsols.us>";
+    public EmailService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
-        String requestJson = "{"
-                + "\"to\":\"" + to + "\","
-                + "\"from\":\"" + from + "\","
-                + "\"subject\":\"" + subject + "\","
-                + "\"html\":\"" + html + "\""
-                + "}";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
-        RestTemplate restTemplate = new RestTemplate();
+    public void sendEmail(Email email) {
 
-        restTemplate.postForEntity(apiURL, entity, String.class);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper;
+        try {
+            helper = new MimeMessageHelper(message, true);
+            helper.setTo(email.getTo());
+            helper.setSubject(email.getSubject());
+            helper.setText(email.getHtml(), true);
+
+            helper.setFrom("REDSOLS <hello@redsols.us>");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        // Send email
+        javaMailSender.send(message);
 
     }
+
 
 }

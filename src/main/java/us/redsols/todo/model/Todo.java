@@ -19,7 +19,9 @@ public class Todo {
 
    private String username;
 
-    public Todo( String title, String date, boolean completed, String repeat, String remind, boolean important, String uid) {
+   private String time;
+
+    public Todo( String title, String date, boolean completed, String repeat, String remind, boolean important, String uid, String time) {
         this.title = title;
         this.date = date;
         this.completed = completed;
@@ -27,6 +29,7 @@ public class Todo {
         this.remind = remind;
         this.important = important;
         this.uid = uid;
+        this.time = time;
     }
 
     public String getId() {
@@ -107,5 +110,13 @@ public class Todo {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
