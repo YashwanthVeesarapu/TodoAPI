@@ -9,10 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 @EnableScheduling
 public class TodoApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(TodoApplication.class, args);
-
 	}
-
 }
