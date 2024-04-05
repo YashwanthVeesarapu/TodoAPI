@@ -30,9 +30,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Copy built artifact
+        run: cp -R target $GITHUB_WORKSPACE/target
+
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.13.15
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
+          procfile: "web: java -jar $GITHUB_WORKSPACE/target/*.jar"
