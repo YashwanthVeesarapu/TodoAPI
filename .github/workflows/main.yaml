@@ -30,16 +30,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Remove target folder
-        run: rm -rf target/todo-0.0.1.jar
-
-      - name: Copy built artifact from build job
-        run: cp -r ${{ needs.build.outputs.artifact }} target/todo-0.0.1.jar  target/todo-0.0.1.jar
-
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.13.15
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
-          procfile: "web: java -jar  -Djava.version=21 $GITHUB_WORKSPACE/target/todo-0.0.1.jar"
+          procfile: "web: java -jar  -Djava.version=21 $GITHUB_WORKSPACE/todo-0.0.1.jar"
