@@ -32,4 +32,4 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
-          procfile: "web: java $JAVA_TOOL_OPTIONS -jar target/todo-0.0.1.jar --spring.profiles.active=heroku"
+          procfile: "web: java -jar /app.jar"
