@@ -34,7 +34,7 @@ jobs:
         run: rm -rf target/
 
       - name: Copy built artifact
-        run: cp  target/* $GITHUB_WORKSPACE/target/
+        run: cp -r $GITHUB_WORKSPACE/target target/
 
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.13.15
