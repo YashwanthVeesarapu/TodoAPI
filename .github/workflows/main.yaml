@@ -36,4 +36,4 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
-          procfile: "web: java -jar target/todo-0.0.1.jar"
+          stack: container
