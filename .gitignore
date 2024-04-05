@@ -12,7 +12,10 @@ HELP.md
 .springBeans
 .sts4-cache
 
-target
+
+/target/*
+
+!/target/todo-0.0.1.jar
 
 ### IntelliJ IDEA ###
 .idea
@@ -34,3 +37,5 @@ build/
 .vscode/
 
 *.properties
+
+
