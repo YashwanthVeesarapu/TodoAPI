@@ -63,51 +63,33 @@ public class TodoController {
     public Todo editTodo(@RequestBody Todo todo) {
         // today
 
-        System.out.println(java.time.LocalDate.now().toString());
         if (todo.getRemind().equals("true") && todo.getTime() != null
                 && todo.getDate().equals(java.time.LocalDate.now().toString())) {
+            // check if notification already exists
+            // if not add notification
+            Optional<User> user = authService.getUserById(todo.getUid());
 
-            // if task is due in more than 15 mins add notification
-            // time format HH:MM
-            String[] time = todo.getTime().split(":");
-            int hour = Integer.parseInt(time[0]);
-            int min = Integer.parseInt(time[1]);
+            if (user != null) {
+                Notification notification = notificationService.getNotificationByTodoId(todo.getId());
+                if (notification == null) {
+                    notificationService.addNotification(new Notification(
+                            todo.getTitle(),
+                            todo.getDate(),
+                            todo.getTime(),
+                            user.get().getEmail(),
+                            user.get().getTimezone(),
+                            todo.getId()));
+                } else {
+                    // update notification
+                    notification.setTitle(todo.getTitle());
+                    notification.setDate(todo.getDate());
+                    notification.setTime(todo.getTime());
+                    notification.setEmail(user.get().getEmail());
+                    notification.setTimezone(user.get().getTimezone());
+                    notification.setTodoId(todo.getId());
+                    notificationService.editNotification(notification);
 
-            // current time
-            java.util.Calendar cal = java.util.Calendar.getInstance();
-            int currentHour = cal.get(java.util.Calendar.HOUR_OF_DAY);
-            int currentMin = cal.get(java.util.Calendar.MINUTE);
-
-            // if task is due in more than 15 mins add notification
-            if (hour > currentHour || (hour == currentHour && min > currentMin + 15)) {
-                // check if notification already exists
-                // if not add notification
-                Optional<User> user = authService.getUserById(todo.getUid());
-
-                if (!user.isEmpty()) {
-
-                    Notification notification = notificationService.getNotificationByTodoId(todo.getId());
-                    if (notification == null) {
-                        notificationService.addNotification(new Notification(
-                                todo.getTitle(),
-                                todo.getDate(),
-                                todo.getTime(),
-                                user.get().getEmail(),
-                                user.get().getTimezone(),
-                                todo.getId()));
-                    } else {
-                        // update notification
-                        notification.setTitle(todo.getTitle());
-                        notification.setDate(todo.getDate());
-                        notification.setTime(todo.getTime());
-                        notification.setEmail(user.get().getEmail());
-                        notification.setTimezone(user.get().getTimezone());
-                        notification.setTodoId(todo.getId());
-                        notificationService.editNotification(notification);
-
-                    }
                 }
-
             }
 
         }
@@ -120,7 +102,6 @@ public class TodoController {
     public ResponseEntity<?> deleteTodo(@PathVariable String id, @RequestHeader("Authorization") String token,
             @RequestBody Todo todo) {
         String uid = jwtTokenProvider.extractUid(token);
-        System.out.println(id);
         if (uid.equals(todo.getUid())) {
             todoService.deleteTodo(todo);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("message", "Success"));

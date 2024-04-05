@@ -1,5 +1,6 @@
 package us.redsols.todo.controller;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,8 +71,6 @@ public class NotificationController {
                                 todayTodos.add(todo);
                                 // log in console
 
-                                System.out.println(todo.getTime());
-
                                 if (todo.getTime() != null) {
                                     // Send Notification 15 mins before
                                     Notification notification = new Notification(todo.getTitle(), todo.getDate(),
@@ -122,7 +121,7 @@ public class NotificationController {
                         html += "</body>";
                         html += "</html>";
 
-                        // emailService.sendEmail(new Email(user.getEmail(), "Today's Tasks", html));
+                         emailService.sendEmail(new Email(user.getEmail(), "Today's Tasks", html));
                     }
 
                 }
@@ -144,15 +143,21 @@ public class NotificationController {
     @Scheduled(cron = "0 0/1 * * * ?")
     @GetMapping("/reminder")
     public ResponseEntity<?> sendReminder() {
-        System.out.println("run");
         List<Notification> notifications = notificationService.getAllNotifications();
 
         for (Notification notification : notifications) {
 
             // time format 00:00
 
+            // according to timezone
+
+            String timezone = notification.getTimezone();
+            ZoneId zoneId = ZoneId.of(timezone);
+
+            System.out.println(java.time.LocalTime.now(zoneId).plusMinutes(15).toString().substring(0, 5));
+
             if (notification.getTime().equals(
-                    java.time.LocalTime.now().plusMinutes(15).toString().substring(0, 5))
+                    java.time.LocalTime.now(zoneId).plusMinutes(15).toString().substring(0, 5))
 
             ) {
                 String html = "<!DOCTYPE html>";
