@@ -31,4 +31,9 @@ jobs:
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
-          artifact: target/*.jar
+          dontuseforce: true
+          dontautocreate: true
+          usedocker: false
+          justlogin: true
+          region: "us"
+          stack: "heroku-20"
