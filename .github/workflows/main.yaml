@@ -36,4 +36,4 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
-          procfile: "web: java -jar $GITHUB_WORKSPACE/target/*.jar"
+          procfile: "web: java -jar  -Djava.version=21 $GITHUB_WORKSPACE/target/todo-0.0.1.jar"
