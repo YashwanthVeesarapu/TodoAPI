@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: "11"
+          distribution: "adopt"
 
       - name: Build with Maven
         run: mvn -B package --file pom.xml
@@ -32,4 +33,3 @@ jobs:
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
           jar_file_path: target/*.jar
-          distribution: "ubuntu"
