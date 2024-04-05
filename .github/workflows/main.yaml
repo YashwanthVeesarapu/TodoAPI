@@ -22,6 +22,12 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots clean verify
 
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: todo-0.0.1.jar
+          path: target/todo-0.0.1.jar
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -36,4 +42,4 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
-          procfile: "web: java -jar  -Djava.version=21 $GITHUB_WORKSPACE/todo-0.0.1.jar"
+          procfile: "web: java -jar  -Djava.version=21 target/todo-0.0.1.jar"
