@@ -121,7 +121,7 @@ public class NotificationController {
                         html += "</body>";
                         html += "</html>";
 
-                         emailService.sendEmail(new Email(user.getEmail(), "Today's Tasks", html));
+                        emailService.sendEmail(new Email(user.getEmail(), "Today's Tasks", html));
                     }
 
                 }
@@ -153,8 +153,6 @@ public class NotificationController {
 
             String timezone = notification.getTimezone();
             ZoneId zoneId = ZoneId.of(timezone);
-
-            System.out.println(java.time.LocalTime.now(zoneId).plusMinutes(15).toString().substring(0, 5));
 
             if (notification.getTime().equals(
                     java.time.LocalTime.now(zoneId).plusMinutes(15).toString().substring(0, 5))
