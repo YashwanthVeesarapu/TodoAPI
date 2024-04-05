@@ -34,7 +34,7 @@ jobs:
         run: rm -rf target/todo-0.0.1.jar
 
       - name: Copy built artifact from build job
-        run: cp -r ${{ needs.build.outputs.artifact }} target/todo-0.0.1.jar
+        run: cp -r ${{ needs.build.outputs.artifact }} target/todo-0.0.1.jar  target/todo-0.0.1.jar
 
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.13.15
