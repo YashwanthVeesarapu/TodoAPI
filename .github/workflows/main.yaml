@@ -20,7 +20,10 @@ jobs:
           distribution: "adopt"
 
       - name: Replcae file
-        run: mvn clean install
+        run: |
+          mvn clean install
+          cp target/todo-0.0.1.jar target/todo-0.0.1.jar
+          echo "File copied"
 
   deploy:
     runs-on: ubuntu-latest
