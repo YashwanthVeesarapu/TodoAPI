@@ -21,5 +21,7 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
+          usedocker: true
+
           # procfile: "web: java -jar -Djava.version=21 target/todo-0.0.1.jar"
           # branch: main
