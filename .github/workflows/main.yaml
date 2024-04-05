@@ -31,4 +31,4 @@ jobs:
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
-          usedocker: true
+          procfile: "web: java $JAVA_TOOL_OPTIONS -jar target/todo-0.0.1.jar --spring.profiles.active=heroku"
