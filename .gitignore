@@ -15,7 +15,7 @@ HELP.md
 
 /target/*
 
-!/target/todo-0.0.1.jar
+# !/target/todo-0.0.1.jar
 
 ### IntelliJ IDEA ###
 .idea
