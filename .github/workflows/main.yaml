@@ -24,7 +24,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: target
     steps:
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
@@ -32,5 +32,3 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: redtodo
           heroku_email: v.yashwanthreddy2@gmail.com
-          buildpack: heroku/java
-          branch: main
