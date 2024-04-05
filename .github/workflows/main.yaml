@@ -19,11 +19,11 @@ jobs:
           java-version: "21" # Update to the desired JDK version
           distribution: "adopt"
 
-      - name: Replcae file
-        run: |
-          mvn clean install
-          cp target/todo-0.0.1.jar target/todo-0.0.1.jar
-          echo "File copied"
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots clean verify
+
+      - name: Repace the jar file
+        run: cp target/todo-0.0.1.jar todo-0.0.1.jar
 
   deploy:
     runs-on: ubuntu-latest
