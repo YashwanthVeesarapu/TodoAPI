@@ -19,14 +19,8 @@ jobs:
           java-version: "21" # Update to the desired JDK version
           distribution: "adopt"
 
-      - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots clean verify
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
-        with:
-          name: todo-0.0.1.jar
-          path: target/todo-0.0.1.jar
+      - name: Replcae file
+        run: mvn clean install
 
   deploy:
     runs-on: ubuntu-latest
