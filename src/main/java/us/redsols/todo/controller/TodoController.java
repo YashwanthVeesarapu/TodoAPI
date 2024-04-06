@@ -37,6 +37,14 @@ public class TodoController {
     public ResponseEntity<?> fetchAllTodos(@RequestParam("uid") String uid,
             @RequestHeader("Authorization") String token) {
         if (!token.isEmpty()) {
+
+            // validate token
+            Boolean isValid = jwtTokenProvider.validateToken(token);
+
+            if (!isValid) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            }
+
             String extractedUid = jwtTokenProvider.extractUid(token);
             if (extractedUid.equals(uid)) {
                 return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodos(uid));
