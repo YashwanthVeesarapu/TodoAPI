@@ -30,8 +30,9 @@ public class JwtTokenProvider {
 
     // Method to extract UID from a JWT
     public String extractUid(String token) {
-        Claims claims = Jwts.parser()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(jwtSecret)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -40,21 +41,32 @@ public class JwtTokenProvider {
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(jwtSecret)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.getSubject();
+        return (String) claims.getSubject();
     }
 
     public boolean validateToken(String authToken) {
+
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException
-                | IllegalArgumentException ex) {
+        } catch (JwtException e) {
             return false;
         }
+
+        // try {
+        // Claims claims =
+        // Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken).getBody();
+        // return true;
+        // } catch (SignatureException | MalformedJwtException | ExpiredJwtException |
+        // UnsupportedJwtException
+        // | IllegalArgumentException ex) {
+        // return false;
+        // }
     }
 }

@@ -57,11 +57,9 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTodo(@RequestBody Todo rtodo) {
-        String username = jwtTokenProvider.getUsernameFromToken(rtodo.getToken());
-        String uid = jwtTokenProvider.extractUid(rtodo.getToken());
+    public ResponseEntity<?> createTodo(@RequestBody Todo rtodo, @RequestHeader("Authorization") String token) {
+        String username = jwtTokenProvider.getUsernameFromToken(token);
         if (rtodo.getUsername().equals(username)) {
-
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(todoService.createTodo(rtodo));
         } else
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Something is wrong");
