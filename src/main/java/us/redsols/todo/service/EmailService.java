@@ -33,7 +33,7 @@ public class EmailService {
             helper.setSubject(email.getSubject());
             helper.setText(email.getHtml(), true);
 
-            helper.setFrom("REDSOLS <hello@redsols.us>");
+            helper.setFrom("Redsols <hello@redsols.us>");
         } catch (MessagingException e) {
             e.printStackTrace();
         }
