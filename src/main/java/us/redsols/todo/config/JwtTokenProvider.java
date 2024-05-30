@@ -1,6 +1,7 @@
 package us.redsols.todo.config;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +10,17 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+
+    @Autowired
+    public JwtTokenProvider(){
+
+    }
     @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.expiration}")
     private int jwtExpirationInMs;
+
 
     public String generateToken(String username, String uid) {
         Date now = new Date();
