@@ -5,22 +5,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import us.redsols.todo.model.Email;
 import us.redsols.todo.model.Notification;
+import us.redsols.todo.model.Template;
 import us.redsols.todo.model.Todo;
 import us.redsols.todo.model.User;
 import us.redsols.todo.service.AuthService;
 import us.redsols.todo.service.EmailService;
 import us.redsols.todo.service.NotificationService;
 import us.redsols.todo.service.TodoService;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.*;
 
 @RestController
 @RequestMapping("notification")
@@ -30,6 +38,7 @@ public class NotificationController {
     TodoService todoService;
     EmailService emailService;
     NotificationService notificationService;
+    RestTemplate restTemplate;
 
     public NotificationController(AuthService authService, TodoService todoService, EmailService emailService,
             NotificationService notificationService) {
@@ -37,10 +46,14 @@ public class NotificationController {
         this.todoService = todoService;
         this.emailService = emailService;
         this.notificationService = notificationService;
+        restTemplate = new RestTemplate();
     }
 
     @Value("${ADMIN_TOKEN}")
     private String adminToken;
+
+    @Value("${AMPLIFY_API_KEY}")
+    private String apiKey;
 
     // Daily reminder
     @GetMapping
@@ -83,45 +96,121 @@ public class NotificationController {
                         }
                     }
                     if (todayTodos.size() > 0 || pastTodos.size() > 0) {
-                        String html = "<!DOCTYPE html>";
-                        html += "<html>";
-                        html += "<head>";
-                        html += "<style>";
-                        html += "body {font-family: Arial, sans-serif;}";
-                        html += "p {color: #008000;}";
-                        html += ".past-task {color: #FF0000;}";
-                        html += ".task-list {margin-bottom: 20px;}";
-                        html += "</style>";
-                        html += "</head>";
-                        html += "<body>";
-                        html += "<div>";
-                        html += "<h1>To Do by Redsols</h1>";
+                        // String html = "<!DOCTYPE html>";
+                        // html += "<html>";
+                        // html += "<head>";
+                        // html += "<style>";
+                        // html += "body {font-family: Arial, sans-serif;}";
+                        // html += "p {color: #008000;}";
+                        // html += ".past-task {color: #FF0000;}";
+                        // html += ".task-list {margin-bottom: 20px;}";
+                        // html += "</style>";
+                        // html += "</head>";
+                        // html += "<body>";
+                        // html += "<div>";
+                        // html += "<h1>To Do by Redsols</h1>";
 
-                        // Today's Tasks
-                        if (todayTodos.size() > 0) {
-                            html += "<div class='task-list'>";
-                            html += "<h2>Today's Tasks</h2>";
-                            for (Todo todo : todayTodos) {
-                                html += "<p>" + todo.getTitle() + "</p>";
-                            }
-                            html += "</div>";
+                        // // Today's Tasks
+                        // if (todayTodos.size() > 0) {
+                        // html += "<div class='task-list'>";
+                        // html += "<h2>Today's Tasks</h2>";
+                        // for (Todo todo : todayTodos) {
+                        // html += "<p>" + todo.getTitle() + "</p>";
+                        // }
+                        // html += "</div>";
+                        // }
+
+                        // // Pending Tasks
+                        // if (pastTodos.size() > 0) {
+                        // html += "<div class='task-list'>";
+                        // html += "<h2>Pending Tasks</h2>";
+                        // for (Todo todo : pastTodos) {
+                        // html += "<p class='past-task'>" + todo.getTitle() + "</p>";
+                        // }
+                        // html += "</div>";
+                        // }
+
+                        // html += "</div>";
+                        // html += "</body>";
+                        // html += "</html>";
+
+                        // <div id="today"
+                        // style="text-align:center;background-color:green;color:white;padding: 10px
+                        // 20px;border-radius:10px">
+                        // <h3 style='margin-bottom:10px' >Today's Tasks</h3>
+                        // <div id="today-list" >
+                        // <p style="background-color:white; color:
+                        // black;border-radius:20px;margin-bottom:5px; padding:5px" >Task</p>
+                        // </div>
+                        // </div>
+
+                        String html = "";
+
+                        try {
+                            // get template from database
+                            String amplifyURL = "https://api.redsols.us/amplify/api/templates/Taskify";
+                            System.out.println(apiKey);
+
+                            // set headers
+                            HttpHeaders headers = new HttpHeaders();
+                            headers.set("Authorization", "Bearer " + apiKey);
+
+                            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+                            // get request to amplifyURL
+                            ResponseEntity<Template> response = restTemplate.exchange(amplifyURL, HttpMethod.GET,
+                                    entity, Template.class);
+                            html = response.getBody().getHtml();
+
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            System.out.println(e);
                         }
 
-                        // Pending Tasks
-                        if (pastTodos.size() > 0) {
-                            html += "<div class='task-list'>";
-                            html += "<h2>Pending Tasks</h2>";
-                            for (Todo todo : pastTodos) {
-                                html += "<p class='past-task'>" + todo.getTitle() + "</p>";
+                        if (html != "") {
+                            Document document = Jsoup.parse(html);
+                            // Todays Tasks with id today-list
+                            // todays div
+
+                            if (todayTodos.size() > 0) {
+                                Element todayDiv = document.getElementById("today-list");
+                                // existing tasks
+                                Element pElement = todayDiv.selectFirst("p");
+
+                                // delete existing tasks
+                                todayDiv.select("p").remove();
+
+                                for (Todo todo : todayTodos) {
+                                    Element newElement = pElement.clone();
+                                    newElement.text(todo.getTitle());
+                                    todayDiv.appendChild(newElement);
+                                }
                             }
-                            html += "</div>";
+
+                            // Pending Tasks with id pending-list
+                            // pending div
+                            if (pastTodos.size() > 0) {
+                                Element pendingDiv = document.getElementById("due-list");
+                                // existing tasks
+                                Element pElement = pendingDiv.selectFirst("p");
+                                // delete existing tasks
+                                pendingDiv.select("p").remove();
+                                for (Todo todo : pastTodos) {
+                                    Element newElement = pElement.clone();
+                                    newElement.text(todo.getTitle());
+                                    pendingDiv.appendChild(newElement);
+                                }
+                            }
+
+                            html = document.html();
+
+                        } else {
+                            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                    .body("Error in fetching template");
                         }
 
-                        html += "</div>";
-                        html += "</body>";
-                        html += "</html>";
+                        emailService.sendEmail(new Email(user.getEmail(), "Taskify | Today's Tasks", html));
 
-                        emailService.sendEmail(new Email(user.getEmail(), "Today's Tasks", html));
                     }
 
                 }
@@ -158,27 +247,75 @@ public class NotificationController {
                     java.time.LocalTime.now(zoneId).plusMinutes(15).toString().substring(0, 5))
 
             ) {
-                String html = "<!DOCTYPE html>";
-                html += "<html>";
-                html += "<head>";
-                html += "<style>";
-                html += "body {font-family: Arial, sans-serif;}";
-                html += "p {color: #008000;}";
-                html += ".past-task {color: #FF0000;}";
-                html += ".task-list {margin-bottom: 20px;}";
-                html += "</style>";
-                html += "</head>";
-                html += "<body>";
-                html += "<div>";
-                html += "<h1>To Do by Redsols</h1>";
-                html += "<div class='task-list'>";
-                html += "<h2>Reminder</h2>";
-                html += "<p>" + notification.getTitle() + "</p>";
-                html += "<p>Time: " + notification.getTime() + "</p>";
-                html += "</div>";
-                html += "</div>";
-                html += "</body>";
-                html += "</html>";
+                // String html = "<!DOCTYPE html>";
+                // html += "<html>";
+                // html += "<head>";
+                // html += "<style>";
+                // html += "body {font-family: Arial, sans-serif;}";
+                // html += "p {color: #008000;}";
+                // html += ".past-task {color: #FF0000;}";
+                // html += ".task-list {margin-bottom: 20px;}";
+                // html += "</style>";
+                // html += "</head>";
+                // html += "<body>";
+                // html += "<div>";
+                // html += "<h1>To Do by Redsols</h1>";
+                // html += "<div class='task-list'>";
+                // html += "<h2>Reminder</h2>";
+                // html += "<p>" + notification.getTitle() + "</p>";
+                // html += "<p>Time: " + notification.getTime() + "</p>";
+                // html += "</div>";
+                // html += "</div>";
+                // html += "</body>";
+                // html += "</html>";
+
+                String html = "";
+
+                try {
+                    // get template from database
+                    String amplifyURL = "https://api.redsols.us/amplify/api/templates/Taskify";
+                    System.out.println(apiKey);
+
+                    // set headers
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.set("Authorization", "Bearer " + apiKey);
+
+                    HttpEntity<String> entity = new HttpEntity<>(headers);
+
+                    // get request to amplifyURL
+                    ResponseEntity<Template> response = restTemplate.exchange(amplifyURL, HttpMethod.GET, entity,
+                            Template.class);
+                    html = response.getBody().getHtml();
+
+                } catch (Exception e) {
+
+                    System.out.println(e);
+                }
+
+                if (html != "") {
+                    Document document = Jsoup.parse(html);
+                    // Todays Tasks with id today-list
+                    // todays div
+
+                    Element todayDiv = document.getElementById("today-list");
+                    // h3 inside today div
+                    Element mainDiv = document.getElementById("today");
+                    Element h3Element = mainDiv.selectFirst("h3");
+                    h3Element.text("Reminder");
+                    // existing tasks
+                    Element pElement = todayDiv.selectFirst("p");
+
+                    // delete existing tasks
+                    todayDiv.select("p").remove();
+                    Element newElement = pElement.clone();
+                    newElement.text(notification.getTitle());
+                    todayDiv.appendChild(newElement);
+
+                    html = document.html();
+
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in fetching template");
+                }
 
                 emailService.sendEmail(new Email(notification.getEmail(), "Reminder", html));
                 // remove notification

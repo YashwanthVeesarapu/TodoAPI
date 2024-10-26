@@ -1,7 +1,6 @@
 package us.redsols.todo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
@@ -16,6 +15,7 @@ import java.io.InputStream;
 public class FileService {
     @Autowired
     private GridFsTemplate gridFsTemplate;
+
     public FileService(GridFsTemplate gridFsTemplate) {
         this.gridFsTemplate = gridFsTemplate;
     }
@@ -27,13 +27,13 @@ public class FileService {
 
         return gridFsTemplate.store(inputStream, fileName, contentType).toString();
     }
+
     public InputStream getFile(String fileId) throws IOException {
         GridFsResource resource = gridFsTemplate.getResource(fileId);
         return resource.getInputStream();
     }
 
-
-    public void deleteFile(String filename) throws  IOException {
+    public void deleteFile(String filename) throws IOException {
         Query query = new Query(Criteria.where("filename").is(filename));
         gridFsTemplate.delete(query);
     }

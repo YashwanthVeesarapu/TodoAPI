@@ -30,12 +30,19 @@ public class EmailService {
             helper.setText(email.getHtml(), true);
 
             helper.setFrom("Redsols <hello@redsols.us>");
+
         } catch (MessagingException e) {
             e.printStackTrace();
         }
 
         // Send email
-        javaMailSender.send(message);
+        try {
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
 
     }
 
