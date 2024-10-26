@@ -2,7 +2,6 @@ package us.redsols.todo.service;
 
 import org.springframework.stereotype.Service;
 
-import us.redsols.todo.model.EditUser;
 import us.redsols.todo.model.User;
 import us.redsols.todo.repo.AuthRepository;
 
@@ -15,11 +14,18 @@ public class UserService {
         this.authRepository = authRepository;
     }
 
-    public User editUser(EditUser user) {
-        User newUser = authRepository.findById(user.getUid()).get();
+    public User editUser(User user) {
+        User newUser = authRepository.findById(user.getId()).get();
         newUser.setEmail(user.getEmail());
         newUser.setTimezone(user.getTimezone());
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
         return authRepository.save(newUser);
+    }
+
+    public String changePassword(User user) {
+        authRepository.save(user);
+        return "Password changed successfully";
     }
 
 }

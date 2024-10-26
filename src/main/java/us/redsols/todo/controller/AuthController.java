@@ -3,13 +3,13 @@ package us.redsols.todo.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import us.redsols.todo.config.JwtTokenProvider;
 import us.redsols.todo.model.User;
+import us.redsols.todo.model.UserLogin;
 import us.redsols.todo.service.AuthService;
 
 import java.util.Optional;
@@ -20,7 +20,6 @@ public class AuthController {
 
     private AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
-
     private BCryptPasswordEncoder passwordEncoder;
 
     public AuthController(AuthService authService, JwtTokenProvider jwtTokenProvider) {
@@ -45,12 +44,12 @@ public class AuthController {
         User newUser = authService.addUser(user);
         String token = jwtTokenProvider.generateToken(newUser.getUsername(), newUser.getId());
         newUser.setAccessToken(token);
-        newUser.setPassword("");
+        newUser.setPassword(null);
         return ResponseEntity.ok(newUser);
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody UserLogin user) {
 
         if (user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username and password are required");
@@ -69,12 +68,13 @@ public class AuthController {
             if (passwordEncoder.matches(user.getPassword(), existingUser.get().getPassword())) {
                 String token = jwtTokenProvider.generateToken(existingUser.get().getUsername(),
                         existingUser.get().getId());
-                existingUser.get().setAccessToken(token);
-                // existingUser.get().setPassword("");
-                // remove password field from response no key in json
-                existingUser.get().setPassword("");
 
-                return ResponseEntity.ok(existingUser.get());
+                User responseUser = existingUser.get();
+
+                responseUser.setAccessToken(token);
+                responseUser.setPassword(null);
+
+                return ResponseEntity.ok(responseUser);
             } else {
                 // Passwords do not match, handle accordingly (e.g., return an error response)
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");

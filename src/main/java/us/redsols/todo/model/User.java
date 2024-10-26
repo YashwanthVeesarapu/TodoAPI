@@ -10,19 +10,23 @@ public class User {
     private String id;
     @Indexed(unique = true)
     private String username;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String timezone;
     private String password;
     private String accessToken;
-    private String email;
 
-    private String timezone;
-
-    public User(String username, String password, String accessToken, String email, String timezone) {
+    public User(String username, String email, String timezone, String firstName, String lastName, String password,
+            String accessToken) {
         super();
         this.username = username;
-        this.password = password;
-        this.accessToken = accessToken;
         this.email = email;
         this.timezone = timezone;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.accessToken = accessToken;
     }
 
     public String getId() {
@@ -49,14 +53,6 @@ public class User {
         this.password = password;
     }
 
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -71,5 +67,29 @@ public class User {
 
     public void setTimezone(String timezone) {
         this.timezone = timezone;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }
