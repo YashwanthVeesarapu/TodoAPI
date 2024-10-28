@@ -96,54 +96,6 @@ public class NotificationController {
                         }
                     }
                     if (todayTodos.size() > 0 || pastTodos.size() > 0) {
-                        // String html = "<!DOCTYPE html>";
-                        // html += "<html>";
-                        // html += "<head>";
-                        // html += "<style>";
-                        // html += "body {font-family: Arial, sans-serif;}";
-                        // html += "p {color: #008000;}";
-                        // html += ".past-task {color: #FF0000;}";
-                        // html += ".task-list {margin-bottom: 20px;}";
-                        // html += "</style>";
-                        // html += "</head>";
-                        // html += "<body>";
-                        // html += "<div>";
-                        // html += "<h1>To Do by Redsols</h1>";
-
-                        // // Today's Tasks
-                        // if (todayTodos.size() > 0) {
-                        // html += "<div class='task-list'>";
-                        // html += "<h2>Today's Tasks</h2>";
-                        // for (Todo todo : todayTodos) {
-                        // html += "<p>" + todo.getTitle() + "</p>";
-                        // }
-                        // html += "</div>";
-                        // }
-
-                        // // Pending Tasks
-                        // if (pastTodos.size() > 0) {
-                        // html += "<div class='task-list'>";
-                        // html += "<h2>Pending Tasks</h2>";
-                        // for (Todo todo : pastTodos) {
-                        // html += "<p class='past-task'>" + todo.getTitle() + "</p>";
-                        // }
-                        // html += "</div>";
-                        // }
-
-                        // html += "</div>";
-                        // html += "</body>";
-                        // html += "</html>";
-
-                        // <div id="today"
-                        // style="text-align:center;background-color:green;color:white;padding: 10px
-                        // 20px;border-radius:10px">
-                        // <h3 style='margin-bottom:10px' >Today's Tasks</h3>
-                        // <div id="today-list" >
-                        // <p style="background-color:white; color:
-                        // black;border-radius:20px;margin-bottom:5px; padding:5px" >Task</p>
-                        // </div>
-                        // </div>
-
                         String html = "";
 
                         try {
@@ -247,27 +199,6 @@ public class NotificationController {
                     java.time.LocalTime.now(zoneId).plusMinutes(15).toString().substring(0, 5))
 
             ) {
-                // String html = "<!DOCTYPE html>";
-                // html += "<html>";
-                // html += "<head>";
-                // html += "<style>";
-                // html += "body {font-family: Arial, sans-serif;}";
-                // html += "p {color: #008000;}";
-                // html += ".past-task {color: #FF0000;}";
-                // html += ".task-list {margin-bottom: 20px;}";
-                // html += "</style>";
-                // html += "</head>";
-                // html += "<body>";
-                // html += "<div>";
-                // html += "<h1>To Do by Redsols</h1>";
-                // html += "<div class='task-list'>";
-                // html += "<h2>Reminder</h2>";
-                // html += "<p>" + notification.getTitle() + "</p>";
-                // html += "<p>Time: " + notification.getTime() + "</p>";
-                // html += "</div>";
-                // html += "</div>";
-                // html += "</body>";
-                // html += "</html>";
 
                 String html = "";
 
