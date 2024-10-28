@@ -229,6 +229,10 @@ public class NotificationController {
                     // todays div
 
                     Element todayDiv = document.getElementById("today-list");
+                    Element dueDiv = document.getElementById("due-list");
+
+                    // remove due div
+                    dueDiv.remove();
                     // h3 inside today div
                     Element mainDiv = document.getElementById("today");
                     Element h3Element = mainDiv.selectFirst("h3");
