@@ -3,7 +3,9 @@ package us.redsols.todo.model;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 public class ExpenseGroup {
     @Id
     private String id;

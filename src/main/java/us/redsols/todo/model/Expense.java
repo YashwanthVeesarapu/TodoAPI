@@ -14,14 +14,18 @@ public class Expense {
     private String date;
     private String paidBy;
     private List<ExpenseSplit> splits;
+    private String groupId;
 
-    public Expense(String description, double amount, String date, String paidBy, List<ExpenseSplit> splits) {
+    public Expense(String description, double amount, String date, String paidBy, List<ExpenseSplit> splits,
+            String groupId) {
         super();
         this.description = description;
         this.amount = amount;
         this.date = date;
         this.paidBy = paidBy;
         this.splits = splits;
+        this.groupId = groupId;
+
     }
 
     public String getId() {
@@ -70,6 +74,14 @@ public class Expense {
 
     public void setSplits(List<ExpenseSplit> splits) {
         this.splits = splits;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
 }
