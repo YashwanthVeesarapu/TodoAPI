@@ -260,41 +260,4 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body("Send Scheduled Emails");
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<?> testEmail() {
-        String html = "<!DOCTYPE html>";
-        html += "<html>";
-        html += "<head>";
-        html += "<style>";
-        html += "body {font-family: Arial, sans-serif;}";
-        html += "p {color: #008000;}";
-        html += ".past-task {color: #FF0000;}";
-        html += ".task-list {margin-bottom: 20px;}";
-        html += "</style>";
-        html += "</head>";
-        html += "<body>";
-        html += "<div>";
-        html += "<h1>To Do by Redsols</h1>";
-        html += "<div class='task-list'>";
-        html += "<h2>Today's Tasks</h2>";
-        html += "<p>Task 1</p>";
-        html += "<p>Task 2</p>";
-        html += "</div>";
-        html += "<div class='task-list'>";
-        html += "<h2>Pending Tasks</h2>";
-        html += "<p class='past-task'>Task 3</p>";
-        html += "<p class='past-task'>Task 4</p>";
-        html += "</div>";
-        html += "</div>";
-        html += "</body>";
-        html += "</html>";
-        // Send Email
-
-        emailService.sendEmail(new Email("v.yashwanthreddy2@gmail.com", "Today's Tasks", html));
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("Email sent");
-
-    }
-
 }
