@@ -8,13 +8,14 @@ pipeline {
         OLD_PORT = 7000  // Port for the old app
         NEW_PORT = 7001  // Port for the new app
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'  // Correct Java version path
+		DOMAIN_NAME= 's.todo.redsols.com'
     }
 
     stages {
         stage('Checkout') {
             steps {
                 // Checkout the project from Git repository
-                git 'https://github.com/your-username/your-repository.git'  // Replace with your Git repository URL
+                git 'https://github.com/YashwanthVeesarapu/ToDo-Server.git'  // Replace with your Git repository URL
             }
         }
 
