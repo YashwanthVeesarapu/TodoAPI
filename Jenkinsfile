@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        MVN_HOME = '/usr/local/apache-maven'  // Path to Maven
+        MVN_HOME = '/usr/bin/mvn'  // Path to Maven
         APP_NAME = 'todo-0.0.1.jar'  // Your application JAR file name
         DEPLOY_PATH = '/home/yash/deploy'  // Path where the JAR will be stored
         OLD_PORT = 7000  // Port for the old app
@@ -23,7 +23,7 @@ pipeline {
             steps {
                 // Build the Spring Boot application with Maven
                 script {
-                    sh "'${MVN_HOME}/bin/mvn' clean install"
+                    sh "'${MVN_HOME}' clean install"
                 }
             }
         }
