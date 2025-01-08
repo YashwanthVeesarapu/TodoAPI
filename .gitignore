@@ -36,6 +36,11 @@ build/
 ### VS Code ###
 .vscode/
 
+###  MVN ###
+.mvn
+mvnw
+mvnw.cmd
+
 *.properties
 
 !system.properties
