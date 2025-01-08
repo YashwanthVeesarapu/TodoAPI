@@ -4,7 +4,7 @@ pipeline {
     environment {
         MVN_HOME = '/usr/bin/mvn'  // Path to Maven
         APP_NAME = 'todo-0.0.1.jar'  // Your application JAR file name
-        DEPLOY_PATH = '/home/yash/deploy'  // Path where the JAR will be stored
+        DEPLOY_PATH = 'deploy'  // Path where the JAR will be stored
         OLD_PORT = 7000  // Port for the old app
         NEW_PORT = 7001  // Port for the new app
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'  // Correct Java version path
@@ -33,8 +33,9 @@ pipeline {
                 script {
                     // Copy the built JAR to the deploy directory and run it on port 7001
                     sh """
-                        sudo cp target/${APP_NAME} ${DEPLOY_PATH}/
-                        sudo bash -c 'cd ${DEPLOY_PATH} && nohup java -jar -Dserver.port=${NEW_PORT} ${APP_NAME} > app-new.log 2>&1 &'
+                        cp target/${APP_NAME} ${DEPLOY_PATH}/
+                        cd ${DEPLOY_PATH}
+                        nohup java -jar -Dserver.port=${NEW_PORT} ${APP_NAME} > app-new.log 2>&1 &
                     """
                 }
             }
