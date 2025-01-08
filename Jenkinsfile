@@ -15,7 +15,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the project from Git repository
-                git credentialsId: 'bfc88f96-eb1e-4df4-99cb-66f945cc956a', url: 'https://github.com/YashwanthVeesarapu/ToDo-Server.git'  // Replace with your Git repository URL
+                git branch: 'main', credentialsId: 'bfc88f96-eb1e-4df4-99cb-66f945cc956a', url: 'https://github.com/YashwanthVeesarapu/ToDo-Server.git'  // Replace with your Git repository URL
             }
         }
 
