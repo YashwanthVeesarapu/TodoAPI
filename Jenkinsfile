@@ -33,7 +33,7 @@ pipeline {
                 script {
                     // Copy the built JAR to the deploy directory and run it on port 7001
                     sh """
-                        sudo cp target/${APP_NAME} ${DEPLOY_PATH}/
+                        cp target/${APP_NAME} ${DEPLOY_PATH}/
                         sudo cd ${DEPLOY_PATH}
                         nohup java -jar -Dserver.port=${NEW_PORT} ${APP_NAME} > app-new.log 2>&1 &
                     """
