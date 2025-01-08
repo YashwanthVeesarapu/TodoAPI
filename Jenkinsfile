@@ -15,7 +15,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the project from Git repository
-                git 'https://github.com/YashwanthVeesarapu/ToDo-Server.git'  // Replace with your Git repository URL
+                git clone 'https://github.com/YashwanthVeesarapu/ToDo-Server.git'  // Replace with your Git repository URL
             }
         }
 
