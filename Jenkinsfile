@@ -9,7 +9,7 @@ pipeline {
         NEW_PORT = 7001  // Port for the new app
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'  // Correct Java version path
 		DOMAIN_NAME= 's.todo.redsols.com'
-        SECRET = e2wrjfbqwefjejfkejkfwejkfrwejrfkewrfjwergjegkwregkjrvjrnvwrvg4w4wefefn3j4jnjrt45tjr45t34523451324352345r23452
+        SECRET = credentials("SECRET")
         MONGO_URI = credentials("MONGO_URI")
         EXPIRATION= credentials("EXPIRATION")
         ADMIN_TOKEN= credentials("ADMIN_TOKEN")
