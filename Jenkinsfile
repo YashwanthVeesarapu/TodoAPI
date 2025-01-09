@@ -8,17 +8,17 @@ pipeline {
         OLD_PORT = 7000  // Port for the old app
         NEW_PORT = 7001  // Port for the new app
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'  // Correct Java version path
-		DOMAIN_NAME= 's.todo.redsols.com'
-        SECRET = credentials('SECRET')
-        MONGO_URI = credentials('MONGO_URI')
-        EXPIRATION = credentials('EXPIRATION')
-        ADMIN_TOKEN = credentials('ADMIN_TOKEN')
-        AMPLIFY_API_KEY = credentials('AMPLIFY_API_KEY')
-        SPRING_MAIL_PORT = credentials('SPRING_MAIL_PORT')
-        SPRING_MAIL_USERNAME = credentials('SPRING_MAIL_USERNAME')
-        SPRING_MAIL_PASSWORD = credentials('SPRING_MAIL_PASSWORD')
-        SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = credentials('SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH')
-        SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = credentials('SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE')
+		DOMAIN_NAME = 's.todo.redsols.com'
+        // SECRET = credentials('SECRET')
+        // MONGO_URI = credentials('MONGO_URI')
+        // EXPIRATION = credentials('EXPIRATION')
+        // ADMIN_TOKEN = credentials('ADMIN_TOKEN')
+        // AMPLIFY_API_KEY = credentials('AMPLIFY_API_KEY')
+        // SPRING_MAIL_PORT = credentials('SPRING_MAIL_PORT')
+        // SPRING_MAIL_USERNAME = credentials('SPRING_MAIL_USERNAME')
+        // SPRING_MAIL_PASSWORD = credentials('SPRING_MAIL_PASSWORD')
+        SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = true
+        SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = true
     }
     stages {
         stage('Test Credentials') {
