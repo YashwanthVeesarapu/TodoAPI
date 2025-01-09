@@ -33,7 +33,7 @@ pipeline {
             steps {
                 // Build the Spring Boot application with Maven
                 script {
-                    sh "'${MVN_HOME}' clean install"
+                    sh "${MVN_HOME} clean install"
                 }
             }
         }
