@@ -22,16 +22,13 @@ public class TestController {
     EmailService emailService;
     RestTemplate restTemplate;
 
-
-    public TestController(EmailService emailService){
+    public TestController(EmailService emailService) {
         this.emailService = emailService;
         restTemplate = new RestTemplate();
     }
 
-
-
     public void sendTestEmail() {
-        
+
         String html = "<!DOCTYPE html>";
         html += "<html>";
         html += "<head>";
@@ -66,14 +63,11 @@ public class TestController {
 
     }
 
-
     @GetMapping("email")
-    public ResponseEntity<?> dailyEmailService(){
+    public ResponseEntity<?> dailyEmailService() {
         sendTestEmail();
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("sent email");
 
     }
-
-
 
 }
