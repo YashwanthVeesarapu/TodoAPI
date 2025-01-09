@@ -38,7 +38,7 @@ pipeline {
             steps {
                 // Build the Spring Boot application with Maven
                 script {
-                    sh '${MVN_HOME} clean install'
+                    sh "${MVN_HOME} clean install"
                 }
             }
         }
@@ -80,7 +80,7 @@ pipeline {
             steps {
                 script {
                     // Gracefully stop the old version of the app (running on port 7000)
-                    sh 'pkill -f 'java -jar ${DEPLOY_PATH}/todo-0.0.1.jar' || true'
+                    sh "pkill -f 'java -jar ${DEPLOY_PATH}/todo-0.0.1.jar' || true"
                 }
             }
         }
