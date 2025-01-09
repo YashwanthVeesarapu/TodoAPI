@@ -20,7 +20,6 @@ pipeline {
         SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = credentials("SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH")
         SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = credentials("SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE")
     }
-
     stages {
         stage('Checkout') {
             steps {
