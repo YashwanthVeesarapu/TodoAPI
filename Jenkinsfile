@@ -28,7 +28,13 @@ pipeline {
                 git branch: 'main', credentialsId: 'bfc88f96-eb1e-4df4-99cb-66f945cc956a', url: 'https://github.com/YashwanthVeesarapu/ToDo-Server.git'  // Replace with your Git repository URL
             }
         }
-
+        stage('Test Credentials') {
+            steps {
+                script {
+                    echo "EXPIRATION: ${EXPIRATION}"
+                }
+            }
+        }
         stage('Build') {
             steps {
                 // Build the Spring Boot application with Maven
