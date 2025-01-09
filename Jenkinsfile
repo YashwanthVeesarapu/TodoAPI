@@ -79,7 +79,7 @@ pipeline {
             steps {
                 script {
                     // Gracefully stop the old version of the app (running on port 7000)
-                    sh 'pkill -f "java -jar ${DEPLOY_PATH}/your-app-0.0.1-SNAPSHOT.jar" || true'
+                    sh 'pkill -f "java -jar ${DEPLOY_PATH}/todo-0.0.1.jar" || true'
                 }
             }
         }
