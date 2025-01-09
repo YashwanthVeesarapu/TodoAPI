@@ -21,12 +21,6 @@ pipeline {
         SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = credentials("SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE")
     }
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the project from Git repository
-                git branch: 'main', credentialsId: 'bfc88f96-eb1e-4df4-99cb-66f945cc956a', url: 'https://github.com/YashwanthVeesarapu/ToDo-Server.git'  // Replace with your Git repository URL
-            }
-        }
         stage('Test Credentials') {
             steps {
                 script {
@@ -34,6 +28,12 @@ pipeline {
                 }
             }
         }
+        stage('Checkout') {
+            steps {
+                // Checkout the project from Git repository
+                git branch: 'main', credentialsId: 'bfc88f96-eb1e-4df4-99cb-66f945cc956a', url: 'https://github.com/YashwanthVeesarapu/ToDo-Server.git'  // Replace with your Git repository URL
+            }
+        } 
         stage('Build') {
             steps {
                 // Build the Spring Boot application with Maven
@@ -42,7 +42,6 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy New Version') {
             steps {
                 script {
@@ -55,7 +54,6 @@ pipeline {
                 }
             }
         }
-
         stage('Verify New Version') {
             steps {
                 script {
@@ -67,7 +65,6 @@ pipeline {
                 }
             }
         }
-
         stage('Switch Traffic to New Version') {
             steps {
                 script {
@@ -79,7 +76,6 @@ pipeline {
                 }
             }
         }
-
         stage('Stop Old Version') {
             steps {
                 script {
@@ -89,7 +85,6 @@ pipeline {
             }
         }
     }
-
     post {
         success {
             echo 'Zero downtime deployment successful!'
