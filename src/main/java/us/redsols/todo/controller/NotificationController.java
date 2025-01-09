@@ -123,9 +123,9 @@ public class NotificationController {
                             Document document = Jsoup.parse(html);
                             // Todays Tasks with id today-list
                             // todays div
+                            Element todayDiv = document.getElementById("today-list");
 
                             if (todayTodos.size() > 0) {
-                                Element todayDiv = document.getElementById("today-list");
                                 // existing tasks
                                 Element pElement = todayDiv.selectFirst("p");
 
@@ -137,12 +137,16 @@ public class NotificationController {
                                     newElement.text(todo.getTitle());
                                     todayDiv.appendChild(newElement);
                                 }
+                            } else {
+                                // delete existing tasks
+                                todayDiv.remove();
                             }
 
                             // Pending Tasks with id pending-list
                             // pending div
+                            Element pendingDiv = document.getElementById("due-list");
+
                             if (pastTodos.size() > 0) {
-                                Element pendingDiv = document.getElementById("due-list");
                                 // existing tasks
                                 Element pElement = pendingDiv.selectFirst("p");
                                 // delete existing tasks
@@ -152,6 +156,9 @@ public class NotificationController {
                                     newElement.text(todo.getTitle());
                                     pendingDiv.appendChild(newElement);
                                 }
+                            } else {
+                                // delete due tasks
+                                pendingDiv.remove();
                             }
 
                             html = document.html();
