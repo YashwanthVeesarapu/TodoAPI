@@ -9,22 +9,22 @@ pipeline {
         NEW_PORT = 7001  // Port for the new app
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'  // Correct Java version path
 		DOMAIN_NAME= 's.todo.redsols.com'
-        // SECRET = credentials("SECRET")
-        // MONGO_URI = credentials("MONGO_URI")
-        // EXPIRATION = credentials("EXPIRATION")
-        // ADMIN_TOKEN = credentials("ADMIN_TOKEN")
-        // AMPLIFY_API_KEY = credentials("AMPLIFY_API_KEY")
-        // SPRING_MAIL_PORT = credentials("SPRING_MAIL_PORT")
-        // SPRING_MAIL_USERNAME = credentials("SPRING_MAIL_USERNAME")
-        // SPRING_MAIL_PASSWORD = credentials("SPRING_MAIL_PASSWORD")
-        // SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = credentials("SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH")
-        // SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = credentials("SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE")
+        SECRET = credentials('SECRET')
+        MONGO_URI = credentials('MONGO_URI')
+        EXPIRATION = credentials('EXPIRATION')
+        ADMIN_TOKEN = credentials('ADMIN_TOKEN')
+        AMPLIFY_API_KEY = credentials('AMPLIFY_API_KEY')
+        SPRING_MAIL_PORT = credentials('SPRING_MAIL_PORT')
+        SPRING_MAIL_USERNAME = credentials('SPRING_MAIL_USERNAME')
+        SPRING_MAIL_PASSWORD = credentials('SPRING_MAIL_PASSWORD')
+        SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = credentials('SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH')
+        SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = credentials('SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE')
     }
     stages {
         stage('Test Credentials') {
             steps {
                 script {
-                    echo "EXPIRATION: ${EXPIRATION}"
+                    echo 'EXPIRATION: ${EXPIRATION}'
                 }
             }
         }
@@ -38,7 +38,7 @@ pipeline {
             steps {
                 // Build the Spring Boot application with Maven
                 script {
-                    sh "${MVN_HOME} clean install"
+                    sh '${MVN_HOME} clean install'
                 }
             }
         }
@@ -46,11 +46,11 @@ pipeline {
             steps {
                 script {
                     // Copy the built JAR to the deploy directory and run it on port 7001
-                    sh """
+                    sh '''
                         cp target/${APP_NAME} ${DEPLOY_PATH}/
                         cd ${DEPLOY_PATH}
                         nohup java -jar -Dserver.port=${NEW_PORT} ${APP_NAME} > app-new.log 2>&1 &
-                    """
+                    '''
                 }
             }
         }
@@ -58,9 +58,9 @@ pipeline {
             steps {
                 script {
                     // Check if the new version is up and running on port 7001
-                    def isAppRunning = sh(script: "curl --silent --head http://127.0.0.1:${NEW_PORT}", returnStatus: true) == 0
+                    def isAppRunning = sh(script: 'curl --silent --head http://127.0.0.1:${NEW_PORT}', returnStatus: true) == 0
                     if (!isAppRunning) {
-                        error "New version is not running on port ${NEW_PORT}!"
+                        error 'New version is not running on port ${NEW_PORT}!'
                     }
                 }
             }
@@ -69,10 +69,10 @@ pipeline {
             steps {
                 script {
                     // Update Nginx configuration to point traffic to the new application (port 7001)
-                    sh """
+                    sh '''
                         sudo sed -i 's/proxy_pass http://127.0.0.1:${OLD_PORT}/proxy_pass http://127.0.0.1:${NEW_PORT}/' /etc/nginx/sites-available/default
                         sudo systemctl reload nginx  // Reload Nginx to apply changes
-                    """
+                    '''
                 }
             }
         }
@@ -80,7 +80,7 @@ pipeline {
             steps {
                 script {
                     // Gracefully stop the old version of the app (running on port 7000)
-                    sh 'pkill -f "java -jar ${DEPLOY_PATH}/todo-0.0.1.jar" || true'
+                    sh 'pkill -f 'java -jar ${DEPLOY_PATH}/todo-0.0.1.jar' || true'
                 }
             }
         }
