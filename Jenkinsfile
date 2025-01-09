@@ -1,6 +1,4 @@
 pipeline {
-    agent any
-
     environment {
         MVN_HOME = '/usr/bin/mvn'  // Path to Maven
         APP_NAME = 'todo-0.0.1.jar'  // Your application JAR file name
