@@ -93,5 +93,5 @@ pipeline {
         failure {
             echo 'Zero downtime deployment failed!'
         }
-    }å
+    }
 }
