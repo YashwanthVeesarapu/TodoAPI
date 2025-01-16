@@ -16,7 +16,7 @@ pipeline {
         AMPLIFY_API_KEY = credentials('AMPLIFY_API_KEY')
         SPRING_MAIL_PORT = 587
         SPRING_MAIL_USERNAME = credentials('SPRING_MAIL_USERNAME')
-         = credentials('SPRING_MAIL_PASSWORD')
+        SPRING_MAIL_PASSWORD = credentials('SPRING_MAIL_PASSWORD')
         SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = true
         SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = true
     }
