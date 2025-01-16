@@ -5,8 +5,8 @@ pipeline {
         MVN_HOME = '/usr/bin/mvn'  // Path to Maven
         APP_NAME = 'todo-0.0.1.jar'  // Your application JAR file name
         DEPLOY_PATH = '/var/lib/jenkins/deploy'  // Path where the JAR will be stored
-        OLD_PORT = 7000  // Port for the old app
-        NEW_PORT = 7001  // Port for the new app
+        OLD_PORT = '7000'  // Port for the old app
+        NEW_PORT = '7001'  // Port for the new app
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'  // Correct Java version path
 		DOMAIN_NAME = 's.todo.redsols.com'
         SECRET = credentials('SECRET')
@@ -14,11 +14,11 @@ pipeline {
         EXPIRATION = credentials('EXPIRATION')
         ADMIN_TOKEN = credentials('ADMIN_TOKEN')
         AMPLIFY_API_KEY = credentials('AMPLIFY_API_KEY')
-        SPRING_MAIL_PORT = 587
+        SPRING_MAIL_PORT = '587'
         SPRING_MAIL_USERNAME = credentials('SPRING_MAIL_USERNAME')
         SPRING_MAIL_PASSWORD = credentials('SPRING_MAIL_PASSWORD')
-        SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = true
-        SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = true
+        SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = 'true'
+        SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = 'true'
     }
     stages {
         stage('Test Credentials') {
