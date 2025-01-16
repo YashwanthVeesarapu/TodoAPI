@@ -11,7 +11,7 @@ pipeline {
 		DOMAIN_NAME = 's.todo.redsols.com'
         // SECRET = credentials('SECRET')
         // MONGO_URI = credentials('MONGO_URI')
-        // EXPIRATION = credentials('EXPIRATION')
+        EXPIRATION = credentials('EXPIRATION')
         // ADMIN_TOKEN = credentials('ADMIN_TOKEN')
         // AMPLIFY_API_KEY = credentials('AMPLIFY_API_KEY')
         // SPRING_MAIL_PORT = credentials('SPRING_MAIL_PORT')
@@ -93,5 +93,5 @@ pipeline {
         failure {
             echo 'Zero downtime deployment failed!'
         }
-    }
+    }å
 }
