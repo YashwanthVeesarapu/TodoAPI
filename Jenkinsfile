@@ -24,7 +24,7 @@ pipeline {
         stage('Test Credentials') {
             steps {
                 script {
-                    echo 'EXPIRATION: ${EXPIRATION}'
+                    echo "EXPIRATION: ${EXPIRATION}"
                 }
             }
         }
