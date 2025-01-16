@@ -16,13 +16,7 @@ pipeline {
                 script {
                     echo "Pulling latest code into ${PROJECT_DIR}"
                     dir(PROJECT_DIR) {
-                        if (fileExists('.git')) {
-                            // Pull latest changes if .git exists
-                            sh 'git pull origin main'
-                        } else {
-                            // Clone the repo if .git doesn't exist
-                            sh 'git clone https://github.com/YashwanthVeesarapu/ToDo-Server.git .'
-                        }
+                       sh 'git pull origin main'
                     }
                 }
             }
