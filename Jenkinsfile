@@ -142,6 +142,7 @@ pipeline {
                     // Check if the new version is up and running on port 7001
                     def isAppRunning = sh(script: 'curl --silent --head http://127.0.0.1:${NEW_PORT}', returnStatus: true) == 0
                     if (!isAppRunning) {
+                        echo 'New version is not running on port ${NEW_PORT}!'
                         error 'New version is not running on port ${NEW_PORT}!'
                     }
                 }
