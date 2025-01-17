@@ -42,6 +42,8 @@ mvnw
 mvnw.cmd
 
 *.properties
+*.out
+*.log
 
 !system.properties
 !src/main/resources/application.properties
