@@ -93,11 +93,9 @@ pipeline {
         EXPIRATION = credentials('EXPIRATION')
         ADMIN_TOKEN = credentials('ADMIN_TOKEN')
         AMPLIFY_API_KEY = credentials('AMPLIFY_API_KEY')
-        SPRING_MAIL_PORT = '587'
         SPRING_MAIL_USERNAME = credentials('SPRING_MAIL_USERNAME')
         SPRING_MAIL_PASSWORD = credentials('SPRING_MAIL_PASSWORD')
-        SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH = 'true'
-        SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE = 'true'
+
     }
     stages {
         stage('Test Credentials') {
@@ -126,8 +124,13 @@ pipeline {
                 script {
                     // Copy the built JAR to the deploy directory and run it on port 7001
                     sh """
+                        echo "Deploying the new version of the application to ${DEPLOY_PATH}"
                         cp target/${APP_NAME} ${DEPLOY_PATH}/
+                        echo "Starting the new version of the application on port ${NEW_PORT}"
                         cd ${DEPLOY_PATH}
+                        echo "Stopping the old version of the application running on port ${OLD_PORT}"
+                        fuser -k 7001/tcp || true
+                        echo "Starting the new version of the application on port ${NEW_PORT}"
                         nohup java -jar -Dserver.port=${NEW_PORT} ${APP_NAME} > app-new.log 2>&1 &
                     """
                 }
