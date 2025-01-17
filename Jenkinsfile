@@ -131,7 +131,8 @@ pipeline {
                         echo "Stopping the old version of the application running on port ${OLD_PORT}"
                         fuser -k 7001/tcp || true
                         echo "Starting the new version of the application on port ${NEW_PORT}"
-                        nohup java -jar -Dserver.port=${NEW_PORT} ${APP_NAME} > app-new.log 2>&1 &
+                        sudo nohup java -jar -Dserver.port=${NEW_PORT} ${APP_NAME} > app-new.log 2>&1 &
+
                     """
                 }
             }
