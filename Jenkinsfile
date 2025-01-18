@@ -5,7 +5,7 @@ pipeline {
         MVN_HOME = '/usr/bin/mvn'                      // Path to Maven
         APP_NAME = 'todo-0.0.1.jar'                   // Application JAR file name
         DEPLOY_PATH = '/var/lib/jenkins/deploy'       // Directory for deployed JAR
-        WORK_DIR = '/home/yash/Workspace/Redsols/ToDo-Server'        // Jenkins workspace directory
+        WORKSPACE = '/home/yash/Workspace/Redsols/ToDo-Server'        // Jenkins workspace directory
         OLD_PORT = '7000'                             // Port for the currently running app
         NEW_PORT = '7001'                             // Port for the new version
         JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64' // Java version path
@@ -43,13 +43,11 @@ pipeline {
                 script {
                     // Stop any existing process running on the new port
                     echo "Stopping any existing process on port ${NEW_PORT}"
-                    sh "fuser -k ${NEW_PORT}/tcp || true"
-
                     // Deploy the new application version
-                    echo "Deploying the new application to ${DEPLOY_PATH}"
+                    echo "Deploying the new application to ${WORKSPACE}"
                     sh """
-                        cp target/${APP_NAME} ${WORK_DIR}/target/${APP_NAME}
-                        cd ${WORK_DIR}
+                        cp target/${APP_NAME} ${WORKSPACE}/target/${APP_NAME}
+                        cd ${WORKSPACE}
                         nohup java -jar -Dserver.port=${NEW_PORT} target/${APP_NAME} > app-new.log 2>&1 &
                     """
                 }
