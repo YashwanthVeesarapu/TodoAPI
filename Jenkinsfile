@@ -48,7 +48,7 @@ pipeline {
                     sh """
                         cp target/${APP_NAME} ${WORKSPACE}/target/${APP_NAME}
                         cd ${WORKSPACE}
-                        nohup java -jar -Dserver.port=${NEW_PORT} target/${APP_NAME} > app-new.log 2>&1 &
+                        nohup java -jar -Dserver.port=7001 target/todo-0.0.1.jar > output.log 2>&1 &
                     """
                 }
             }
