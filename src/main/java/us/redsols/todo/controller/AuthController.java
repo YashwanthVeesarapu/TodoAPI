@@ -1,5 +1,6 @@
 package us.redsols.todo.controller;
 
+// import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,7 +13,14 @@ import us.redsols.todo.model.User;
 import us.redsols.todo.model.UserLogin;
 import us.redsols.todo.service.AuthService;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("auth")
@@ -49,7 +57,7 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody UserLogin user) {
+    public ResponseEntity<?> login(@RequestBody UserLogin user, HttpServletResponse response) {
 
         if (user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username and password are required");
@@ -69,12 +77,24 @@ public class AuthController {
                 String token = jwtTokenProvider.generateToken(existingUser.get().getUsername(),
                         existingUser.get().getId());
 
+                Cookie cookie = new Cookie("access_token", token);
+                cookie.setHttpOnly(true);
+                cookie.setPath("/");
+                cookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
+                cookie.setSecure(true);
+
+                response.addCookie(cookie);
+
                 User responseUser = existingUser.get();
 
-                responseUser.setAccessToken(token);
-                responseUser.setPassword(null);
+                // responseUser.setAccessToken(token);
+                // responseUser.setPassword(null);
 
-                return ResponseEntity.ok(responseUser);
+                // Create the response map
+                Map<String, Object> responseBody = new HashMap<>();
+                responseBody.put("uid", responseUser.getId());
+
+                return ResponseEntity.ok(responseBody);
             } else {
                 // Passwords do not match, handle accordingly (e.g., return an error response)
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
@@ -82,6 +102,11 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Incorrect username or password");
         }
+    }
+
+    @GetMapping("verify")
+    public String getMethodName(@RequestParam String param) {
+        return new String();
     }
 
     public boolean checkToken(@RequestBody String token) {

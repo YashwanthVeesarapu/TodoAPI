@@ -3,6 +3,8 @@ package us.redsols.todo.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.servlet.http.HttpServletRequest;
 import us.redsols.todo.config.JwtTokenProvider;
 import us.redsols.todo.model.Notification;
 import us.redsols.todo.model.Todo;
@@ -23,52 +25,34 @@ public class TodoController {
 
     private final AuthService authService;
 
-    private final JwtTokenProvider jwtTokenProvider;
-
     public TodoController(TodoService todoService, JwtTokenProvider jwtTokenProvider,
             NotificationService notificationService, AuthService authService) {
         this.todoService = todoService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.notificationService = notificationService;
         this.authService = authService;
     }
 
     @GetMapping
-    public ResponseEntity<?> fetchAllTodos(@RequestParam("uid") String uid,
-            @RequestHeader("Authorization") String token) {
-        if (!token.isEmpty()) {
+    public ResponseEntity<?> fetchAllTodos(@RequestParam("uid") String uid, HttpServletRequest req) {
 
-            // validate token
-            Boolean isValid = jwtTokenProvider.validateToken(token);
+        // validate token
+        // Boolean isValid = jwtTokenProvider.validateToken(token);
 
-            if (!isValid) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-            }
+        String userId = (String) req.getAttribute("uid");
+        System.out.println("userId: " + userId);
 
-            String extractedUid = jwtTokenProvider.extractUid(token);
-            if (extractedUid.equals(uid)) {
-                return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodos(uid));
-            } else
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No Access");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodos(userId));
 
     }
 
     @PostMapping
-    public ResponseEntity<?> createTodo(@RequestBody Todo rtodo, @RequestHeader("Authorization") String token) {
-        String username = jwtTokenProvider.getUsernameFromToken(token);
-        if (rtodo.getUsername().equals(username)) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(todoService.createTodo(rtodo));
-        } else
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Something is wrong");
+    public ResponseEntity<?> createTodo(@RequestBody Todo rtodo) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(todoService.createTodo(rtodo));
     }
 
     @PutMapping()
     public Todo editTodo(@RequestBody Todo todo) {
         // today
-
         if (todo.getRemind().equals("true") && todo.getTime() != null
                 && todo.getDate().equals(java.time.LocalDate.now().toString())) {
             // check if notification already exists
@@ -105,9 +89,9 @@ public class TodoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTodo(@PathVariable String id, @RequestHeader("Authorization") String token,
+    public ResponseEntity<?> deleteTodo(@PathVariable String id, HttpServletRequest req,
             @RequestBody Todo todo) {
-        String uid = jwtTokenProvider.extractUid(token);
+        String uid = req.getAttribute("uid").toString();
         if (uid.equals(todo.getUid())) {
             todoService.deleteTodo(todo);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("message", "Success"));

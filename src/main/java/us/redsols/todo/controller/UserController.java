@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import us.redsols.todo.config.JwtTokenProvider;
 import us.redsols.todo.model.User;
 import us.redsols.todo.service.AuthService;
@@ -18,43 +19,37 @@ public class UserController {
 
     private UserService userService;
     private AuthService authService;
-    private JwtTokenProvider jwtTokenProvider;
 
     private BCryptPasswordEncoder passwordEncoder;
 
     public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, AuthService authService) {
         this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.authService = authService;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     // edit user
     @PutMapping("update")
-    public ResponseEntity<?> edit(@RequestBody User user, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> edit(@RequestBody User user, HttpServletRequest req) {
         // can edit email and timezone
         // error checking
         if (user.getEmail() == null || user.getTimezone() == null) {
             return ResponseEntity.badRequest().body("Email and timezone are required");
         }
 
-        if (!token.isEmpty()) {
-            String extractedUid = jwtTokenProvider.extractUid(token);
+        String extractedUid = req.getAttribute("uid").toString();
 
-            if (extractedUid.equals(user.getId())) {
-                User editedUser = userService.editUser(user);
-                if (editedUser == null) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
-                }
+        if (extractedUid.equals(user.getId())) {
+            User editedUser = userService.editUser(user);
+            if (editedUser == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
+            }
 
-                editedUser.setPassword(null);
+            editedUser.setPassword(null);
 
-                return ResponseEntity.ok(editedUser);
-            } else
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No Access");
-        }
+            return ResponseEntity.ok(editedUser);
+        } else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
 
     }
 
@@ -88,8 +83,7 @@ public class UserController {
     }
 
     @PostMapping("change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePassword object,
-            @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> changePassword(@RequestBody ChangePassword object, HttpServletRequest req) {
 
         // error checking
         if (object.getOldPassword() == null || object.getNewPassword() == null) {
@@ -106,7 +100,7 @@ public class UserController {
         }
 
         // extract user id from token
-        String extractedUid = jwtTokenProvider.extractUid(token);
+        String extractedUid = req.getAttribute("uid").toString();
         // get user from db
         Optional<User> user = authService.getUserById(extractedUid);
 
