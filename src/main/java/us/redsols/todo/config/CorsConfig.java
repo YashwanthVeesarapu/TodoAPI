@@ -26,6 +26,8 @@ public class CorsConfig {
         config.addAllowedHeader("*");
 
         config.addAllowedOrigin("http://localhost:4200");
+        config.addAllowedOrigin("https://todo.redsols.com");
+        config.addAllowedOrigin("https://todo.redsols.us");
         config.setAllowCredentials(true);
 
         source.registerCorsConfiguration("/**", config);
