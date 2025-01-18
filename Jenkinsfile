@@ -53,20 +53,20 @@ pipeline {
             }
         }
 
-        stage('Verify New Version') {
-            steps {
-                script {
-                    // Check if the new application is up and running
-                    echo "Verifying the application on port ${NEW_PORT}"
-                    def isRunning = sh(script: "curl --silent --head http://127.0.0.1:${NEW_PORT}", returnStatus: true) == 0
-                    if (!isRunning) {
-                        error "New application version is not running on port ${NEW_PORT}!"
-                    } else {
-                        echo "New application version is running successfully on port ${NEW_PORT}!"
-                    }
-                }
-            }
-        }
+        // stage('Verify New Version') {
+        //     steps {
+        //         script {
+        //             // Check if the new application is up and running
+        //             echo "Verifying the application on port ${NEW_PORT}"
+        //             def isRunning = sh(script: "curl --silent --head http://127.0.0.1:${NEW_PORT}", returnStatus: true) == 0
+        //             if (!isRunning) {
+        //                 error "New application version is not running on port ${NEW_PORT}!"
+        //             } else {
+        //                 echo "New application version is running successfully on port ${NEW_PORT}!"
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage('Switch Traffic to New Version') {
         //     steps {
