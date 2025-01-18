@@ -47,8 +47,7 @@ pipeline {
                     echo "Deploying the new application to ${WORKSPACE}"
                     sh """
                         cp target/${APP_NAME} ${WORKSPACE}/target/${APP_NAME}
-                        cd ${WORKSPACE}
-                        nohup java -jar -Dserver.port=7001 target/todo-0.0.1.jar > output.log 2>&1 &
+                        sudo systemctl restart todo
                     """
                 }
             }
@@ -69,37 +68,37 @@ pipeline {
             }
         }
 
-        stage('Switch Traffic to New Version') {
-            steps {
-                script {
-                    // Update Nginx configuration for the s.todo.redsols.com domain
-                    echo "Switching traffic to the new application on port ${NEW_PORT} for ${DOMAIN_NAME}"
-                    sh """
-                        sudo sed -i 's/proxy_pass http://127.0.0.1:${OLD_PORT}/proxy_pass http://127.0.0.1:${NEW_PORT}/' /etc/nginx/sites-available/${DOMAIN_NAME}
-                        sudo nginx -t  # Test Nginx configuration
-                        sudo systemctl reload nginx  # Reload Nginx to apply changes
-                    """
-                }
-            }
-        }
+        // stage('Switch Traffic to New Version') {
+        //     steps {
+        //         script {
+        //             // Update Nginx configuration for the s.todo.redsols.com domain
+        //             echo "Switching traffic to the new application on port ${NEW_PORT} for ${DOMAIN_NAME}"
+        //             sh """
+        //                 sudo sed -i 's/proxy_pass http://127.0.0.1:${OLD_PORT}/proxy_pass http://127.0.0.1:${NEW_PORT}/' /etc/nginx/sites-available/${DOMAIN_NAME}
+        //                 sudo nginx -t  # Test Nginx configuration
+        //                 sudo systemctl reload nginx  # Reload Nginx to apply changes
+        //             """
+        //         }
+        //     }
+        // }
 
-        stage('Stop Old Version') {
-            steps {
-                script {
-                    // Gracefully stop the old application running on the old port
-                    echo "Stopping the old application running on port ${OLD_PORT}"
-                    sh "pkill -f 'java -jar ${DEPLOY_PATH}/${APP_NAME}' || true"
-                }
-            }
-        }
+        // stage('Stop Old Version') {
+        //     steps {
+        //         script {
+        //             // Gracefully stop the old application running on the old port
+        //             echo "Stopping the old application running on port ${OLD_PORT}"
+        //             sh "pkill -f 'java -jar ${DEPLOY_PATH}/${APP_NAME}' || true"
+        //         }
+        //     }
+        // }
     }
 
     post {
         success {
-            echo 'Zero downtime deployment completed successfully!'
+            echo 'Deployment completed successfully!'
         }
         failure {
-            echo 'Zero downtime deployment failed!'
+            echo 'Deployment failed!'
         }
     }
 }
