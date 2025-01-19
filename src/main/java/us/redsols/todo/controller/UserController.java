@@ -28,6 +28,18 @@ public class UserController {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
+    @GetMapping
+    public ResponseEntity<?> getUser(HttpServletRequest req) {
+        String uid = req.getAttribute("uid").toString();
+        Optional<User> user = authService.getUserById(uid);
+
+        if (user.isPresent()) {
+            user.get().setPassword(null);
+            return ResponseEntity.ok(user.get());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
+    }
+
     // edit user
     @PutMapping("update")
     public ResponseEntity<?> edit(@RequestBody User user, HttpServletRequest req) {

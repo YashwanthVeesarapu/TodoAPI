@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -105,8 +106,25 @@ public class AuthController {
     }
 
     @GetMapping("verify")
-    public String getMethodName(@RequestParam String param) {
-        return new String();
+    public ResponseEntity<?> verifyUser(HttpServletRequest req, HttpServletResponse res) {
+        // token from http cookie
+        Cookie[] cookies = req.getCookies();
+        String token = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("access_token")) {
+                    token = cookie.getValue();
+
+                    System.out.println("Token: " + token);
+
+                    Cookie newCookie = new Cookie("access_token", token);
+
+                    res.addCookie(newCookie);
+                    return ResponseEntity.ok(jwtTokenProvider.validateToken(token));
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 
     public boolean checkToken(@RequestBody String token) {

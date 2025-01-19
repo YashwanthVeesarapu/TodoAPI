@@ -38,7 +38,8 @@ public class CorsConfig {
     public FilterRegistrationBean<CookieAuthFilter> cookieAuthFilterRegistration() {
         FilterRegistrationBean<CookieAuthFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new CookieAuthFilter(jwtTokenProvider));
-        registrationBean.addUrlPatterns("/todos/* /user/*");
+        registrationBean.addUrlPatterns("/user/*");
+        registrationBean.addUrlPatterns("/todos/*");
         registrationBean.setOrder(1); // Order of execution (lower means higher priority)
         return registrationBean;
     }

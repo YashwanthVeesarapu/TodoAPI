@@ -58,7 +58,7 @@ public class CookieAuthFilter implements Filter {
 
     private boolean requiresAuth(String path) {
         // Add routes that require authentication
-        return path.startsWith("/todos");
+        return path.startsWith("/todos") || path.startsWith("/user");
     }
 
 }
