@@ -5,7 +5,6 @@ import us.redsols.todo.repo.TodoRepository;
 import us.redsols.todo.model.Todo;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TodoService {
@@ -15,19 +14,23 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public List<Todo> getAllTodos(String uid){
-        return  todoRepository.findByUid(uid);
+    public List<Todo> getAllTodos(String uid) {
+
+        List<Todo> todos = todoRepository.findByUid(uid);
+        // sort todos by date
+        todos.sort((t1, t2) -> t1.getDate().compareTo(t2.getDate()));
+        return todos;
     }
 
-    public Todo createTodo(Todo todo){
-          return todoRepository.insert(todo);
+    public Todo createTodo(Todo todo) {
+        return todoRepository.insert(todo);
     }
 
-    public  Todo editTodo(Todo todo){
-        return  todoRepository.save(todo);
+    public Todo editTodo(Todo todo) {
+        return todoRepository.save(todo);
     }
 
-    public void deleteTodo(Todo todo){
+    public void deleteTodo(Todo todo) {
         todoRepository.delete(todo);
     }
 }
