@@ -28,6 +28,12 @@ public class CookieAuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
+        // Let preflight (OPTIONS) requests pass through
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String requestPath = req.getRequestURI();
 
         if (requiresAuth(requestPath)) {
@@ -41,7 +47,7 @@ public class CookieAuthFilter implements Filter {
                         if (jwtTokenProvider.validateToken(token)) {
                             String uid = jwtTokenProvider.extractUid(token);
                             req.setAttribute("uid", uid); // Set user ID for downstream use
-                            chain.doFilter(req, res); // Continue request
+                            chain.doFilter(req, res); // Continue request processing
                             return;
                         }
                     }
@@ -54,6 +60,8 @@ public class CookieAuthFilter implements Filter {
             return;
         }
 
+        // If the request does not require authentication, continue processing
+        chain.doFilter(request, response);
     }
 
     private boolean requiresAuth(String path) {
