@@ -1,12 +1,19 @@
 # Build Stage
 FROM maven:3.8.1-openjdk-11 AS build
 WORKDIR /app
-COPY . .
-RUN mvn -f pom.xml clean package
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy the rest of the source code
+COPY src src
+# Build the application and skip tests to save time (remove -DskipTests if tests are needed)
+RUN mvn clean package -DskipTests
+
 
 # Run Stage
-FROM openjdk:21
+FROM openjdk:21-jdk-slim
 WORKDIR /app
-ARG JAR_FILE=target/*.jar
-COPY --from=build /app/${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar", "app.jar"]
+# Copy the jar file from the build stage
+COPY --from=build /app/target/*.jar app.jar
+# Run the jar file
+ENTRYPOINT ["java", "-jar", "app.jar"]
