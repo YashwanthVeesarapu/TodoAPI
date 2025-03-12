@@ -64,7 +64,7 @@ pipeline {
                         docker stop ${NEW_CONTAINER} || true
                         docker rm ${NEW_CONTAINER} || true
                         echo "Running command: ${dockerCommand}"
-                        sh dockerCommand
+                        dockerCommand
                     """
                 }
             }
