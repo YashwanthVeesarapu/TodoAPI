@@ -48,18 +48,25 @@ pipeline {
 
         stage('Deploy New Container') {
             steps {
-                sh """
-                    docker stop ${NEW_CONTAINER} || true
-                    docker rm ${NEW_CONTAINER} || true
-                    docker run -d --name ${NEW_CONTAINER} -p ${NEW_PORT}:7001 \\
-                        -e SECRET=${SECRET} \\
-                        -e MONGO_URI=${MONGO_URI} \\
-                        -e ADMIN_TOKEN=${ADMIN_TOKEN} \\
-                        -e AMPLIFY_API_KEY=${AMPLIFY_API_KEY} \\
-                        -e SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME} \\
-                        -e SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD} \\
-                        ${DOCKER_IMAGE}:${DOCKER_TAG} 
-                """
+                script{
+                    def dockerCommand = "docker stop ${NEW_CONTAINER} || true && " +
+                            "docker rm ${NEW_CONTAINER} || true && " +
+                            "docker run -d --name ${NEW_CONTAINER} -p ${NEW_PORT}:7001 " +
+                            "-e SECRET=${SECRET} " +
+                            "-e MONGO_URI=${MONGO_URI} " +
+                            "-e ADMIN_TOKEN=${ADMIN_TOKEN} " +
+                            "-e AMPLIFY_API_KEY=${AMPLIFY_API_KEY} " +
+                            "-e SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME} " +
+                            "-e SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD} " +
+                            "${DOCKER_IMAGE}:${DOCKER_TAG}"
+
+                    sh """
+                        docker stop ${NEW_CONTAINER} || true
+                        docker rm ${NEW_CONTAINER} || true
+                        echo "Running command: ${dockerCommand}"
+                        sh dockerCommand
+                    """
+                }
             }
         }
 
