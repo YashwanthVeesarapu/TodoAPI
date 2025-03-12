@@ -2,12 +2,6 @@ pipeline {
     agent any
 
     environment {
-        MVN_HOME = '/usr/bin/mvn'                      // Path to Maven
-        APP_NAME = 'todo-0.0.1.jar'                   // Application JAR file name
-        DEPLOY_PATH = '/var/lib/jenkins/deploy'       // Directory for deployed JAR
-        WORKSPACE = '/home/yash/Workspace/Redsols/ToDo-Server'        // Jenkins workspace directory
-        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64' // Java version path
-        DOMAIN_NAME = 's.todo.redsols.com'            // Domain name
         SECRET = credentials('TODO_SECRET')               // Secret credentials
         MONGO_URI = credentials('TODO_MONGO_URI')         // MongoDB URI
         EXPIRATION = 604800000                      // Expiration time
@@ -57,7 +51,14 @@ pipeline {
                 sh """
                     docker stop ${NEW_CONTAINER} || true
                     docker rm ${NEW_CONTAINER} || true
-                    docker run -d --name ${NEW_CONTAINER} -p ${NEW_PORT}:7001 ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    docker run -d --name ${NEW_CONTAINER} -p ${NEW_PORT}:7001 \
+                    -e SECRET=${SECRET} \
+                    -e MONGO_URI=${MONGO_URI} \
+                    -e ADMIN_TOKEN=${ADMIN_TOKEN} \
+                    -e AMPLIFY_API_KEY=${AMPLIFY_API_KEY} \
+                    -e SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME} \
+                    -e SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD} \
+                    ${DOCKER_IMAGE}:${DOCKER_TAG}  
                 """
             }
         }
