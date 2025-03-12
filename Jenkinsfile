@@ -52,7 +52,7 @@ pipeline {
                     def dockerCommand = """
                         docker stop ${NEW_CONTAINER} || true && 
                         docker rm ${NEW_CONTAINER} || true && 
-                        docker run -d --name ${NEW_CONTAINER} -p ${NEW_PORT}:7001 -e SECRET='${SECRET}' -e MONGO_URI='${MONGO_URI}' -e ADMIN_TOKEN='${ADMIN_TOKEN}' -e AMPLIFY_API_KEY='${AMPLIFY_API_KEY}' -e SPRING_MAIL_USERNAME='${SPRING_MAIL_USERNAME}' -e SPRING_MAIL_PASSWORD='${SPRING_MAIL_PASSWORD}' ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        docker run -d --name ${NEW_CONTAINER} -p ${NEW_PORT}:7001 -e SECRET='${SECRET}' -e MONGO_URI='${MONGO_URI}' -e ADMIN_TOKEN='${ADMIN_TOKEN}' -e AMPLIFY_API_KEY='${AMPLIFY_API_KEY}' -e SPRING_MAIL_USERNAME='${SPRING_MAIL_USERNAME}' -e SPRING_MAIL_PASSWORD='${SPRING_MAIL_PASSWORD}' -e EXPIRATION='${EXPIRATION}' ${DOCKER_IMAGE}:${DOCKER_TAG}
                     """
                     echo "Running command: ${dockerCommand}"
                     sh "${dockerCommand}"
