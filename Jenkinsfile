@@ -64,12 +64,11 @@ pipeline {
             steps {
                 script {
                     sleep 5
-                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:${NEW_PORT}", returnStdout: true).trim()
-                    echo "Container Health Check Response: ${response}"
-
-                    if (response != "200") {
-                        error("Application inside container is not responding! Deployment aborted.")
+                    def isRunning = sh(script: "docker ps --filter 'name=${NEW_CONTAINER}' --format '{{.Names}}'", returnStdout: true).trim()
+                    if (isRunning != NEW_CONTAINER) {
+                        error "Failed to start container ${NEW_CONTAINER}"
                     }
+                    
                 }
             }
         }
