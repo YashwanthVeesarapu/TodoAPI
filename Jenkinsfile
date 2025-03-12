@@ -60,12 +60,7 @@ pipeline {
                             "-e SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD} " +
                             "${DOCKER_IMAGE}:${DOCKER_TAG}"
 
-                    sh """
-                        docker stop ${NEW_CONTAINER} || true
-                        docker rm ${NEW_CONTAINER} || true
-                        echo "Running command: ${dockerCommand}"
-                        dockerCommand
-                    """
+                    sh dockerCommand
                 }
             }
         }
