@@ -47,9 +47,8 @@ pipeline {
         }
 
         stage('Deploy New Container') {
-             steps {
+            steps {
                 script {
-                    // Build the docker run command including stopping and removing the container
                     def dockerCommand = "docker stop ${NEW_CONTAINER} || true && " +
                                         "docker rm ${NEW_CONTAINER} || true && " +
                                         "docker run -d --name ${NEW_CONTAINER} -p ${NEW_PORT}:7001 " +
@@ -60,7 +59,6 @@ pipeline {
                                         "-e SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME} " +
                                         "-e SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD} " +
                                         "${DOCKER_IMAGE}:${DOCKER_TAG}"
-                                        
                     echo "Running command: ${dockerCommand}"
                     sh "${dockerCommand}"
                 }
