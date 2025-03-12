@@ -64,7 +64,7 @@ pipeline {
             steps {
                 script {
                     sleep 5
-                    def response = sh(script: "docker exec ${NEW_CONTAINER} wget -qO- --server-response http://localhost:7001 2>&1 | awk '/HTTP\\// {print \$2}'", returnStdout: true).trim()
+                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:${NEW_PORT}", returnStdout: true).trim()
                     echo "Container Health Check Response: ${response}"
 
                     if (response != "200") {
