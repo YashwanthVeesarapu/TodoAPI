@@ -100,7 +100,7 @@ public class NotificationController {
 
                         try {
                             // get template from database
-                            String amplifyURL = "https://api.redsols.us/amplify/api/templates/Taskify";
+                            String amplifyURL = "https://api.redsols.com/amplify/api/templates/Taskify";
                             System.out.println(apiKey);
 
                             // set headers
@@ -211,7 +211,7 @@ public class NotificationController {
 
                 try {
                     // get template from database
-                    String amplifyURL = "https://api.redsols.us/amplify/api/templates/Taskify";
+                    String amplifyURL = "https://api.redsols.com/amplify/api/templates/Taskify";
                     System.out.println(apiKey);
 
                     // set headers
