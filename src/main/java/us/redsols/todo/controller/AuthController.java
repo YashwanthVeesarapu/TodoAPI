@@ -107,7 +107,6 @@ public class AuthController {
 
     @GetMapping("me")
     public ResponseEntity<?> verifyUser(HttpServletRequest req, HttpServletResponse res) {
-        // token from http cookie
         Cookie[] cookies = req.getCookies();
         String token = null;
         if (cookies != null) {
@@ -115,16 +114,45 @@ public class AuthController {
                 if (cookie.getName().equals("access_token")) {
                     token = cookie.getValue();
 
-                    System.out.println("Token: " + token);
+                    Boolean isValid = jwtTokenProvider.validateToken(token);
+                    if (!isValid) {
+                        Map<String, String> response = new HashMap<>();
+                        response.put("message", "Unauthorized");
 
-                    Cookie newCookie = new Cookie("access_token", token);
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                    }
 
-                    res.addCookie(newCookie);
-                    return ResponseEntity.ok(jwtTokenProvider.validateToken(token));
+                    String uid = jwtTokenProvider.extractUid(token);
+
+                    Map<String, String> response = new HashMap<>();
+                    response.put("uid", uid);
+                    return ResponseEntity.status(HttpStatus.OK).body(response);
                 }
             }
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Unauthorized");
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<?> logout(HttpServletResponse res) {
+        System.out.println("Logging out");
+        // Remove all exsting access token cookies
+        Cookie cookie = new Cookie("access_token", "");
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        cookie.setSecure(true);
+
+        res.addCookie(cookie);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Logged out");
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     public boolean checkToken(@RequestBody String token) {

@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import us.redsols.todo.config.JwtTokenProvider;
 import us.redsols.todo.model.Notification;
@@ -22,6 +23,7 @@ public class TodoController {
 
     private final TodoService todoService;
     private final NotificationService notificationService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private final AuthService authService;
 
@@ -30,18 +32,40 @@ public class TodoController {
         this.todoService = todoService;
         this.notificationService = notificationService;
         this.authService = authService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping
-    public ResponseEntity<?> fetchAllTodos(@RequestParam("uid") String uid, HttpServletRequest req) {
+    public ResponseEntity<?> fetchAllTodos(HttpServletRequest req) {
 
         // validate token
         // Boolean isValid = jwtTokenProvider.validateToken(token);
 
-        String userId = (String) req.getAttribute("uid");
-        System.out.println("userId: " + userId);
+        // access token from http cookie
 
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodos(userId));
+        Cookie[] cookies = req.getCookies();
+        String token = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("access_token")) {
+                    token = cookie.getValue();
+                }
+            }
+        }
+
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        // extract uid from token
+        String uid = jwtTokenProvider.extractUid(token);
+
+        // String userId = (String) req.getAttribute("uid");
+        // System.out.println("userId: " + userId);
+
+        // // cookie "access_token"
+
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.getAllTodos(uid));
 
     }
 
