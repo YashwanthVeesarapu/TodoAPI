@@ -70,7 +70,10 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTodo(@RequestBody Todo rtodo) {
+    public ResponseEntity<?> createTodo(@RequestBody Todo rtodo, HttpServletRequest req) {
+        String uid = req.getAttribute("uid").toString();
+        rtodo.setUid(uid);
+
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(todoService.createTodo(rtodo));
     }
 
