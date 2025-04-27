@@ -105,7 +105,6 @@ public class TodoController {
                     notification.setTimezone(user.get().getTimezone());
                     notification.setTodoId(todo.getId());
                     notificationService.editNotification(notification);
-
                 }
             }
 

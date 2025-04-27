@@ -105,7 +105,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("me")
+    @GetMapping("verify")
     public ResponseEntity<?> verifyUser(HttpServletRequest req, HttpServletResponse res) {
         Cookie[] cookies = req.getCookies();
         String token = null;

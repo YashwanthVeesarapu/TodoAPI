@@ -17,11 +17,10 @@ public class Todo {
     private String uid;
     private String token;
 
-   private String username;
+    private String time;
 
-   private String time;
-
-    public Todo( String title, String date, boolean completed, String repeat, String remind, boolean important, String uid, String time) {
+    public Todo(String title, String date, boolean completed, String repeat, String remind, boolean important,
+            String uid, String time) {
         this.title = title;
         this.date = date;
         this.completed = completed;
@@ -102,14 +101,6 @@ public class Todo {
 
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getTime() {
