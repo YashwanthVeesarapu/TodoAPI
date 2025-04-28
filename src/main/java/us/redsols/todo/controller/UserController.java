@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import us.redsols.todo.config.JwtTokenProvider;
+import us.redsols.todo.constants.AppConstants;
 import us.redsols.todo.model.User;
 import us.redsols.todo.service.AuthService;
 import us.redsols.todo.service.UserService;
@@ -47,6 +48,13 @@ public class UserController {
         // error checking
         if (user.getEmail() == null || user.getTimezone() == null) {
             return ResponseEntity.badRequest().body("Email and timezone are required");
+        }
+
+        // check timezone is valid
+        boolean validTimezone = AppConstants.TIMEZONES.stream()
+                .anyMatch(tz -> tz.get("value").equals(user.getTimezone()));
+        if (!validTimezone) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid timezone");
         }
 
         String extractedUid = req.getAttribute("uid").toString();

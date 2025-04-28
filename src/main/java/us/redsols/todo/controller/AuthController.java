@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import us.redsols.todo.config.JwtTokenProvider;
+import us.redsols.todo.constants.AppConstants;
 import us.redsols.todo.model.User;
 import us.redsols.todo.model.UserLogin;
 import us.redsols.todo.service.AuthService;
@@ -23,10 +24,31 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+// timezones = [
+//     { value: 'America/Los_Angeles', label: 'Pacific Time' },
+//     { value: 'America/New_York', label: 'Eastern Time' },
+//     { value: 'America/Chicago', label: 'Central Time' },
+//     { value: 'America/Denver', label: 'Mountain Time' },
+//     { value: 'America/Anchorage', label: 'Alaska Time' },
+//     { value: 'Pacific/Honolulu', label: 'Hawaii Time' },
+//     { value: 'Europe/London', label: 'London' },
+//     { value: 'Europe/Paris', label: 'Paris' },
+//     { value: 'Asia/Tokyo', label: 'Tokyo' },
+//     { value: 'Australia/Sydney', label: 'Sydney' },
+//     { value: 'Asia/Dubai', label: 'Dubai' },
+//     { value: 'Asia/Kolkata', label: 'India Standard Time' },
+//     { value: 'Asia/Shanghai', label: 'Shanghai' },
+//     { value: 'Asia/Singapore', label: 'Singapore' },
+//     { value: 'Asia/Hong_Kong', label: 'Hong Kong' },
+//     { value: 'Asia/Bangkok', label: 'Bangkok' },
+//     { value: 'Asia/Jakarta', label: 'Jakarta' },
+//     { value: 'Asia/Kuala_Lumpur', label: 'Kuala Lumpur' },
+//     { value: 'Asia/Manila', label: 'Manila' },
+//   ];
+
 @RestController
 @RequestMapping("auth")
 public class AuthController {
-
     private AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
     private BCryptPasswordEncoder passwordEncoder;
@@ -49,9 +71,23 @@ public class AuthController {
         if (user.getUsername().length() < 4) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username must be at least 4 characters long");
         }
+
+        // Check if timezone is provided
+        if (user.getTimezone() == null || user.getTimezone().isEmpty()) {
+
+            user.setTimezone("America/New_York"); // Default timezone if not provided
+        } else {
+            // Validate timzone is present in the list of timezones
+            boolean validTimezone = AppConstants.TIMEZONES.stream()
+                    .anyMatch(tz -> tz.get("value").equals(user.getTimezone()));
+            if (!validTimezone) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid timezone provided");
+            }
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User newUser = authService.addUser(user);
-        String token = jwtTokenProvider.generateToken(newUser.getUsername(), newUser.getId());
+        String token = jwtTokenProvider.generateToken(newUser.getUsername(), newUser.getId(), newUser.getTimezone());
         newUser.setAccessToken(token);
         newUser.setPassword(null);
         return ResponseEntity.ok(newUser);
@@ -73,10 +109,14 @@ public class AuthController {
 
         Optional<User> existingUser = authService.getUserByUsername(user.getUsername());
 
+        String tz = existingUser.get() != null ? existingUser.get().getTimezone() : "America/New_York"; // Default
+                                                                                                        // timezone if
+                                                                                                        // not found
+
         if (existingUser.isPresent()) {
             if (passwordEncoder.matches(user.getPassword(), existingUser.get().getPassword())) {
                 String token = jwtTokenProvider.generateToken(existingUser.get().getUsername(),
-                        existingUser.get().getId());
+                        existingUser.get().getId(), tz);
 
                 Cookie cookie = new Cookie("access_token", token);
                 cookie.setHttpOnly(true);
@@ -94,6 +134,7 @@ public class AuthController {
                 // Create the response map
                 Map<String, Object> responseBody = new HashMap<>();
                 responseBody.put("uid", responseUser.getId());
+                responseBody.put("timezone", responseUser.getTimezone());
 
                 return ResponseEntity.ok(responseBody);
             } else {
@@ -126,6 +167,7 @@ public class AuthController {
 
                     Map<String, String> response = new HashMap<>();
                     response.put("uid", uid);
+                    response.put("timezone", jwtTokenProvider.extractTimezone(token));
                     return ResponseEntity.status(HttpStatus.OK).body(response);
                 }
             }

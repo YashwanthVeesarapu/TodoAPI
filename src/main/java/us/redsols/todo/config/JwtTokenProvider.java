@@ -18,13 +18,14 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private int jwtExpirationInMs;
 
-    public String generateToken(String username, String uid) {
+    public String generateToken(String username, String uid, String tz) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         String token = Jwts.builder()
                 .setSubject(username)
                 .claim("uid", uid)
+                .claim("tz", tz)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS512)
@@ -68,5 +69,16 @@ public class JwtTokenProvider {
         } catch (JwtException e) {
             return false;
         }
+    }
+
+    public String extractTimezone(String token) throws JwtException {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        // Retrieve the timezone claim
+        return (String) claims.get("tz");
     }
 }
