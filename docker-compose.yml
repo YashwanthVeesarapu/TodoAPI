@@ -1,0 +1,18 @@
+services:
+  redash-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: todo-api
+    restart: unless-stopped
+    ports:
+      - "8041:8041"
+    env_file:
+      - .env
+    networks:
+      - default
+
+networks:
+  default:
+    name: shared-network
+    external: true

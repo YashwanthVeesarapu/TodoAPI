@@ -52,3 +52,7 @@ mvnw.cmd
 
 
 .env
+
+
+# mac OS
+.DS_Store
