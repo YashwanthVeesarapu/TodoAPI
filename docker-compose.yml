@@ -6,7 +6,7 @@ services:
     container_name: todo-api
     restart: unless-stopped
     ports:
-      - "8041:7001"
+      - "8041:8041"
     env_file:
       - .env
     networks:
